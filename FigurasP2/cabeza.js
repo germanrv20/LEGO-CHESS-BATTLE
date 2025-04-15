@@ -8,13 +8,12 @@ class Cabeza extends THREE.Object3D {
     // Material tipo LEGO
     const material = new THREE.MeshNormalMaterial();
 
-    // Perfil de la cabeza tipo LEGO (para Lathe)
     const shapeCabeza = new THREE.Shape();
-    shapeCabeza.lineTo(-0.25, 0);
-    shapeCabeza.quadraticCurveTo(-0.5, 0, -0.5, 0.25);
-    shapeCabeza.lineTo(-0.5, 0.75);
-    shapeCabeza.quadraticCurveTo(-0.5, 1, -0.25, 1);
-    shapeCabeza.lineTo(0, 1);
+       shapeCabeza.lineTo(-0.25, 0);
+       shapeCabeza.quadraticCurveTo(-0.5, 0, -0.5, 0.18); 
+       shapeCabeza.lineTo(-0.5, 0.6);                    
+       shapeCabeza.quadraticCurveTo(-0.5, 0.8, -0.25, 0.8); 
+       shapeCabeza.lineTo(0, 0.8); 
 
     // Extraer puntos para revolución
     const points = shapeCabeza.extractPoints(6).shape;
