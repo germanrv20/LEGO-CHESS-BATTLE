@@ -273,12 +273,7 @@ class Torre extends Pieza {
     return finalButton; // Retornar el botón
   }
   
-  createGUI(gui, titleGui) {
-    // Controles de la GUI
-    this.guiControls = {
-      resolucion: 10 // Valor inicial para la resolución
-    };
-  }
+  
 
   update() {
     // Método vacío para actualizaciones (si es necesario)

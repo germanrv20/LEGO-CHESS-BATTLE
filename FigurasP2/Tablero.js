@@ -8,6 +8,8 @@ import { Torre } from './Torre.js'
 import { Lego } from './Lego.js'
 import { Alfil } from './Alfil.js'
 import { Peon } from './Peon.js'
+import { Caballo } from './caballo.js';
+import { Reina } from './Reina.js';
 class Tablero extends THREE.Object3D {
   constructor(gui, titleGui) {
     super(); // Llama al constructor de la clase base
@@ -63,6 +65,9 @@ class Tablero extends THREE.Object3D {
       
       pieza.moverA(nuevaFila, nuevaColumna);
     }
+
+
+    
   }
 
   // Coloca las piezas en sus posiciones iniciales
@@ -95,10 +100,18 @@ class Tablero extends THREE.Object3D {
     const PeonB8 = new Peon("blanco",1,7,21);
 
     const AlfilA1 = new Alfil("negro",0,2,22);
-    const AlfilA2 = new Alfil("negro",0,5,22);
+    const AlfilA2 = new Alfil("negro",0,5,23);
 
-    const AlfilB1 = new Alfil("blanco",7,2,22);
-    const AlfilB2 = new Alfil("blanco",7,5,22);
+    const AlfilB1 = new Alfil("blanco",7,2,24);
+    const AlfilB2 = new Alfil("blanco",7,5,25);
+
+    const CaballoA1 = new Caballo("negro",0,1,26);
+    const CaballoA2 = new Caballo("negro",0,6,27);
+    const CaballoB1 = new Caballo("blanco",7,1,28);
+    const CaballoB2 = new Caballo("blanco",7,6,29);
+
+    const ReinaA1 = new Reina("negro",0,4,30);
+    const ReinaB1 = new Reina("blanco",7,4,31);
     
     
     
@@ -131,6 +144,13 @@ class Tablero extends THREE.Object3D {
     this.tablero[0][5] = AlfilA2;
     this.tablero[7][2] = AlfilB1;
     this.tablero[7][5] = AlfilB2;
+    this.tablero[0][1] = CaballoA1;
+    this.tablero[0][6] = CaballoA2;
+    this.tablero[7][1] = CaballoB1;
+    this.tablero[7][6] = CaballoB2;
+    this.tablero[0][4] = ReinaA1;
+    this.tablero[7][4] = ReinaB1;
+   
 
    
     //this.moverPieza(reyBlanco, 5, 3); // Mueve el rey blanco a su posición inicial
@@ -166,6 +186,14 @@ class Tablero extends THREE.Object3D {
     this.add(AlfilA2);
     this.add(AlfilB1);
     this.add(AlfilB2);
+
+    this.add(CaballoA1);
+    this.add(CaballoA2);
+    this.add(CaballoB1);
+    this.add(CaballoB2);
+
+    this.add(ReinaA1);
+    this.add(ReinaB1);
     
   }
 

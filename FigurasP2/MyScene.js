@@ -14,6 +14,7 @@ import { Alfil } from './Alfil.js'
 import { Tablero } from './Tablero.js'
 import { Rey } from './Rey.js'
 import { Peon } from './Peon.js'
+import { Caballo } from './caballo.js'
 
  
 /// La clase fachada del modelo
@@ -58,13 +59,16 @@ class MyScene extends THREE.Scene {
     this.model3.position.set(0, 0, 0);
     this.model4 = new Rey("blanco", -1, 20,20); //la pone os lejos 
     this.model5 = new Peon("blanco", -1, 20,20);
+    this.model6 = new Caballo("blanco", -1, 20,20);
     // Se añade el modelo a la escena
     this.add (this.model);
     this.add (this.model1);
     this.add (this.model2);
     this.add (this.model3);
     this.add (this.model4);
-   this.add (this.model5);
+    this.add (this.model5);
+    this.add (this.model6);
+   
   }
   
   initStats() {
