@@ -169,69 +169,71 @@ class Tablero extends THREE.Object3D { // Define una clase que extiende de Objec
 
     //TABLERO FINAL 
     
-    this.add(casilla_final3); // Añade el botón a la escena
 
     var cuadrado1 = casilla_final3.clone();
     cuadrado1.position.set(2.8, 0, 0); // Posición del cuadrado
-    this.add(cuadrado1); // Añade el cuadrado a la escena
 
     var cuadrado2 = casilla_final3.clone();
     cuadrado2.position.set(2.8, 0, 2.8); // Posición del cuadrado
-    this.add(cuadrado2); // Añade el cuadrado a la escena
 
     var cuadrado3 = casilla_final3.clone();
     cuadrado3.position.set(0, 0, 2.8); // Posición del cuadrado
-    this.add(cuadrado3); // Añade el cuadrado a la escena
 
     var cuadrado4 = casilla_final3.clone();
     cuadrado4.position.set(5.6, 0, 0); // Posición del cuadrado
-    this.add(cuadrado4); // Añade el cuadrado a la escena
 
     var cuadrado5 = casilla_final3.clone();
     cuadrado5.position.set(5.6, 0, 2.8); // Posición del cuadrado
-    this.add(cuadrado5); // Añade el cuadrado a la escena
 
     var cuadrado6 = casilla_final3.clone();
     cuadrado6.position.set(0, 0, 5.6); // Posición del cuadrado
-    this.add(cuadrado6); // Añade el cuadrado a la escena
 
     var cuadrado7 = casilla_final3.clone();
     cuadrado7.position.set(2.8, 0, 5.6); // Posición del cuadrado
-    this.add(cuadrado7); // Añade el cuadrado a la escena
 
     var cuadrado8 = casilla_final3.clone();
     cuadrado8.position.set(5.6, 0, 5.6); // Posición del cuadrado
-    this.add(cuadrado8); // Añade el cuadrado a la escena
 
     var cuadrado9 = casilla_final3.clone();
     cuadrado9.position.set(0, 0, 8.4); // Posición del cuadrado
-    this.add(cuadrado9); // Añade el cuadrado a la escena
     
     var cuadrado10 = casilla_final3.clone();
     cuadrado10.position.set(2.8, 0, 8.4); // Posición del cuadrado
-    this.add(cuadrado10); // Añade el cuadrado a la escena
 
     var cuadrado11 = casilla_final3.clone();
     cuadrado11.position.set(5.6, 0, 8.4); // Posición del cuadrado
-    this.add(cuadrado11); // Añade el cuadrado a la escena
 
     var cuadrado12 = casilla_final3.clone();
     cuadrado12.position.set(8.4, 0, 0); // Posición del cuadrado
-    this.add(cuadrado12); // Añade el cuadrado a la escena
 
     var cuadrado13 = casilla_final3.clone();
     cuadrado13.position.set(8.4, 0, 2.8); // Posición del cuadrado
-    this.add(cuadrado13); // Añade el cuadrado a la escena
 
     var cuadrado14 = casilla_final3.clone();
     cuadrado14.position.set(8.4, 0, 5.6); // Posición del cuadrado
-    this.add(cuadrado14); // Añade el cuadrado a la escena
     
     var cuadrado15 = casilla_final3.clone();
     cuadrado15.position.set(8.4, 0, 8.4); // Posición del cuadrado
-    this.add(cuadrado15); // Añade el cuadrado a la escena
 
 
+    
+    this.add(casilla_final3); // Añade el botón a la escena
+    this.add(cuadrado1); // Añade el botón a la escena
+    this.add(cuadrado2); // Añade el botón a la escena
+    this.add(cuadrado3); // Añade el botón a la escena
+    this.add(cuadrado4); // Añade el botón a la escena
+    this.add(cuadrado5); // Añade el botón a la escena
+    this.add(cuadrado6); // Añade el botón a la escena
+    this.add(cuadrado7); // Añade el botón a la escena
+    this.add(cuadrado8); // Añade el botón a la escena
+    this.add(cuadrado9); // Añade el botón a la escena
+    this.add(cuadrado10); // Añade el botón a la escena
+    this.add(cuadrado11); // Añade el botón a la escena
+    this.add(cuadrado12); // Añade el botón a la escena
+    this.add(cuadrado13); // Añade el botón a la escena
+    this.add(cuadrado14); // Añade el botón a la escena
+    this.add(cuadrado15); // Añade el botón a la escena
+    
 
   }
 

@@ -28,7 +28,6 @@ class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3
     var material = new THREE.MeshNormalMaterial({ flatShading: true });
 
 
-
     //********************** BASE DE LA FIGURA ***************************
    
     // Dibujamos la base principal que será un rectángulo
@@ -56,6 +55,12 @@ class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3
     var cilindro3 = new CSG.Brush(cilindro_geom3, this.material);
     //this.add(cilindro3); // Añade el cilindro a la escena
 
+    var rectangulo_corte_geom = new THREE.BoxGeometry(0.05, 0.5, 0.5);
+    rectangulo_corte_geom.rotateZ(-Math.PI / 4); // Rota el rectángulo
+    rectangulo_corte_geom.translate(0.2, 1.85, 0);
+    var rectangulo_corte = new CSG.Brush(rectangulo_corte_geom, this.material);
+    //this.add(rectangulo_corte); // Añade el rectángulo a la escena
+
     // Rectangulo para la parte superior
     var esfera_geom =  new THREE.SphereGeometry(0.25,100,100,1); // Crea un rectángulo
     esfera_geom.translate(0,1.55,0); // Traslada el rectángulo
@@ -79,10 +84,12 @@ class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3
     var tmp3 = evaluator.evaluate(tmp2, cilindro3, CSG.ADDITION);
     var tmp4 = evaluator.evaluate(tmp3, esfera, CSG.ADDITION);
     var tmp5 = evaluator.evaluate(tmp4, cono, CSG.ADDITION);
-    var alfil_final = evaluator.evaluate(tmp5, boton1, CSG.ADDITION);
+    var tmp6 = evaluator.evaluate(tmp5, rectangulo_corte, CSG.SUBTRACTION);
+    var alfil_final = evaluator.evaluate(tmp6, boton1, CSG.ADDITION);
+
     this.add(alfil_final); // Añade el resultado a la escena
 
-    alfil_final.geometry.translate(0, 0, -1.5); // Traslada el resultado a la posición deseada
+    //alfil_final.geometry.translate(0, 0, -1.5); // Traslada el resultado a la posición deseada
     
 
   }

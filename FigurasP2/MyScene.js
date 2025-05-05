@@ -4,20 +4,16 @@
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
-
-import { Peon } from './Peon.js';
-import { Cabeza } from './cabeza.js';
-
-
-
-
-
-
-
+import  Stats from '../libs/stats.module.js'
 
 // Clases de mi proyecto
 
-
+import { Torre } from './Torre.js'
+import { Lego } from './Lego.js'
+import { Alfil } from './Alfil.js'
+import { Tablero } from './Tablero.js'
+import { Rey } from './Rey.js'
+import { Peon } from './Peon.js'
 
  
 /// La clase fachada del modelo
@@ -35,7 +31,7 @@ class MyScene extends THREE.Scene {
     // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
     
-   
+    this.initStats();
     
     // Construimos los distinos elementos que tendremos en la escena
     
@@ -46,42 +42,45 @@ class MyScene extends THREE.Scene {
     // Tendremos una cámara con un control de movimiento con el ratón
     this.createCamera ();
     
-    // Un suelo 
-   // this.createGround ();
-    
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     // Todas las unidades están en metros
     this.axis = new THREE.AxesHelper (2);
     this.add (this.axis);
 
-   
- 
-  
-
-    
-
-   
     
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Peon(this.gui, "Controles del Auricular");
+    this.model = new Torre(this.gui, "Controles de la Caja");
+    this.model1 = new Lego(this.gui, "Controles del Lego");
+    this.model2 = new Alfil(this.gui, "Controles del Alfil");
+    this.model3 = new Tablero(this.gui, "Controles del Tablero");
+    this.model4 = new Rey(this.gui, "Controles del Rey");
+    this.model5 = new Peon(this.gui, "Controles del Peon");
+    // Se añade el modelo a la escena
     this.add (this.model);
-   
-    this.model2 = new Cabeza(this.gui, "Controles del Auricular");
-    this.model2.position.set(0, 0, 0);
+    this.add (this.model1);
     this.add (this.model2);
-
-    
-
-   
-   
-
-
-  
+    this.add (this.model3);
+    this.add (this.model4);
+    this.add (this.model5);
   }
   
+  initStats() {
   
+    var stats = new Stats();
+    
+    stats.setMode(0); // 0: fps, 1: ms
+    
+    // Align top-left
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    
+    $("#Stats-output").append( stats.domElement );
+    
+    this.stats = stats;
+  }
   
   createCamera () {
     // Para crear una cámara le indicamos
@@ -107,27 +106,6 @@ class MyScene extends THREE.Scene {
     this.cameraControl.target = look;
   }
   
-  createGround () {
-    // El suelo es un Mesh, necesita una geometría y un material.
-    
-    // La geometría es una caja con muy poca altura
-    var geometryGround = new THREE.BoxGeometry (10,0.2,10);
-    
-    // El material se hará con una textura de madera
-    var texture = new THREE.TextureLoader().load('../imgs/wood.jpg');
-    var materialGround = new THREE.MeshStandardMaterial ({map: texture});
-    
-    // Ya se puede construir el Mesh
-    var ground = new THREE.Mesh (geometryGround, materialGround);
-    
-    // Todas las figuras se crean centradas en el origen.
-    // El suelo lo bajamos la mitad de su altura para que el origen del mundo se quede en su lado superior
-    ground.position.y = -0.1;
-    
-    // Que no se nos olvide añadirlo a la escena, que en este caso es  this
-    this.add (ground);
-  }
-  
   createGUI () {
     // Se crea la interfaz gráfica de usuario
     var gui = new GUI();
@@ -139,23 +117,11 @@ class MyScene extends THREE.Scene {
       // En el contexto de una función   this   alude a la función
       lightPower : 500.0,  // La potencia de esta fuente de luz se mide en lúmenes
       ambientIntensity : 0.5,   
-      axisOnOff : true,
-      smoothShading: true, // Empieza con sombreado suave
+      axisOnOff : true
     }
-
-   
-      var folder = gui.addFolder('Sombreado');
-      folder.add(this.guiControls, 'smoothShading').name('Sombreado Suave').onChange((value) => {
-        this.setSmoothShading(value);
-      });
-      
-
-    
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder ('Luz y Ejes');
-
-    
     
     // Se le añade un control para la potencia de la luz puntual
     folder.add (this.guiControls, 'lightPower', 0, 1000, 20)
@@ -204,8 +170,6 @@ class MyScene extends THREE.Scene {
   
   setAxisVisible (valor) {
     this.axis.visible = valor;
-    this.axis2.visible = valor;
-
   }
   
   createRenderer (myCanvas) {
@@ -249,34 +213,9 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize (window.innerWidth, window.innerHeight);
   }
 
-  setSmoothShading(smooth) {
-    this.traverse((obj) => {
-      if (obj.isMesh) {
-        if (Array.isArray(obj.material)) {
-          // Si el objeto tiene múltiples materiales, actualizarlos todos
-          obj.material.forEach(mat => {
-            if (mat.isMaterial && 'flatShading' in mat) {
-              mat.flatShading = !smooth;
-              mat.needsUpdate = true;
-            }
-          });
-        } else {
-          // Si tiene un solo material, actualizarlo
-          if (obj.material.isMaterial && 'flatShading' in obj.material) {
-            obj.material.flatShading = !smooth;
-            obj.material.needsUpdate = true;
-          }
-        }
-      }
-    });
-  }
-  
-  
-  
-
   update () {
     
-    
+    if (this.stats) this.stats.update();
     
     // Se actualizan los elementos de la escena para cada frame
     
@@ -284,14 +223,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-   // this.model.update()
-   
-
-
-
-
-
-   
+    this.model.update();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());

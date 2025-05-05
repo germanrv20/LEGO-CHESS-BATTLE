@@ -6,7 +6,7 @@ class Peon extends THREE.Object3D {
     super();
 
     // 🛠 Definir el material
-    const material = new THREE.MeshNormalMaterial();
+    const material = new THREE.MeshNormalMaterial({flatShading: true});
     // Dibujamos la base principal que será un rectángulo
 
     var base = new THREE.BoxGeometry(1, 1, 0.40); // Crea un rectángulo
@@ -59,6 +59,9 @@ class Peon extends THREE.Object3D {
 
     // Crear un Mesh con la geometría resultante y aplicar el material
     const Objeto = new THREE.Mesh(temp2.geometry, material);
+
+    Objeto.geometry.scale(1, 0.8, 1); // Escalar el objeto
+    Objeto.geometry.translate(2, 0, 0); // Ajustar la posición del objeto
     this.add(Objeto);
 
   }

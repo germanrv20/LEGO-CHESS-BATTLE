@@ -52,43 +52,109 @@ class Torre extends THREE.Object3D { // Define una clase que extiende de Object3
     //this.add(cilindro2); // Añade el cilindro a la escena
 
     // Rectangulo para la parte superior
-    var rectangulo_geom2 =  new THREE.BoxGeometry(0.8, 0.40, 0.8); // Crea un rectángulo
-    rectangulo_geom2.translate(0,1.6,0); // Traslada el rectángulo
+    var rectangulo_geom2 =  new THREE.BoxGeometry(0.8, 0.20, 0.8); // Crea un rectángulo
+    rectangulo_geom2.translate(0,1.5,0); // Traslada el rectángulo
     var rectangulo2 = new CSG.Brush(rectangulo_geom2, this.material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo2); // Añade el rectángulo a la escena
 
-    
+    // Rectangulo para la parte superior
+    var rectangulo_geom3 =  new THREE.BoxGeometry(0.8, 0.20, 0.8); // Crea un rectángulo
+    rectangulo_geom3.translate(0,1.7,0); // Traslada el rectángulo
+    var rectangulo3 = new CSG.Brush(rectangulo_geom3, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo3); // Añade el rectángulo a la escena
+
+    // Rectangulo para la parte superior
+    var rectangulo_geom4 =  new THREE.BoxGeometry(0.15, 0.20, 0.8); // Crea un rectángulo
+    rectangulo_geom4.translate(-0.18,1.7,0); // Traslada el rectángulo
+    var rectangulo4 = new CSG.Brush(rectangulo_geom4, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo4); // Añade el rectángulo a la escena
+
+    // Rectangulo para la parte superior
+    var rectangulo_geom5 =  new THREE.BoxGeometry(0.15, 0.20, 0.8); // Crea un rectángulo
+    rectangulo_geom5.translate(0.17,1.7,0); // Traslada el rectángulo
+    var rectangulo5 = new CSG.Brush(rectangulo_geom5, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo5); // Añade el rectángulo a la escena
+
+    // Rectangulo para la parte superior
+    var rectangulo_geom6 =  new THREE.BoxGeometry(0.8, 0.20, 0.15); // Crea un rectángulo
+    rectangulo_geom6.translate(0,1.7,-0.17); // Traslada el rectángulo
+    var rectangulo6 = new CSG.Brush(rectangulo_geom6, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo6); // Añade el rectángulo a la escena
+
+    // Rectangulo para la parte superior
+    var rectangulo_geom7 =  new THREE.BoxGeometry(0.8, 0.20, 0.15); // Crea un rectángulo
+    rectangulo_geom7.translate(0,1.7,0.17); // Traslada el rectángulo
+    var rectangulo7 = new CSG.Brush(rectangulo_geom7, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo7); // Añade el rectángulo a la escena
+
+    // Rectangulo para la parte superior
+    var rectangulo_geom4 =  new THREE.BoxGeometry(0.15, 0.20, 0.8); // Crea un rectángulo
+    rectangulo_geom4.translate(-0.17,1.7,0); // Traslada el rectángulo
+    var rectangulo4 = new CSG.Brush(rectangulo_geom4, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo4); // Añade el rectángulo a la escena
+
+    // Rectangulo para la parte superior
+    var rectangulo_geom8 =  new THREE.BoxGeometry(0.25, 0.2, 0.25); // Crea un rectángulo
+    rectangulo_geom8.translate(0,1.7,0); // Traslada el rectángulo
+    var rectangulo8 = new CSG.Brush(rectangulo_geom8, this.material); // Crea un mesh con el rectángulo y el material
+    //this.add(rectangulo8); // Añade el rectángulo a la escena
+        
     var boton1 = this.createBotón();
-    boton1.geometry.translate(0.2, 1.85, 0.2); // Traslada el botón a la posición deseada
+    boton1.scale.set(0.5, 0.5, 0.5); // Rota el botón 180 grados
+    boton1.geometry.translate(0.32, 1.85, 0.32); // Traslada el botón a la posición deseada
     //this.add(boton1); // Añade el botón a la escena
 
     var boton2 = this.createBotón();
-    boton2.geometry.translate(-0.2, 1.85, 0.2); // Traslada el botón a la posición deseada
+    boton2.scale.set(0.9, 0.9, 0.9); // Rota el botón 180 grados
+    boton2.geometry.translate(-0.32, 1.85, 0.32); // Traslada el botón a la posición deseada
     //this.add(boton2); // Añade el botón a la escena
 
     var boton3 = this.createBotón();
-    boton3.geometry.translate(-0.2, 1.85, -0.2); // Traslada el botón a la posición deseada
+    boton3.scale.set(0.9, 0.9, 0.9); // Rota el botón 180 grados
+    boton3.geometry.translate(-0.32, 1.85, -0.32); // Traslada el botón a la posición deseada
     //this.add(boton3); // Añade el botón a la escena
 
     var boton4 = this.createBotón();
-    boton4.geometry.translate(0.2, 1.85, -0.2); // Traslada el botón a la posición deseada
+    boton4.scale.set(0.9, 0.9, 0.9); // Rota el botón 180 grados
+    boton4.geometry.translate(0.32, 1.85, -0.32); // Traslada el botón a la posición deseada
     //this.add(boton4); // Añade el botón a la escena
+
+
+    var evaluator = new CSG.Evaluator();
+    var tmp = evaluator.evaluate(rectangulo3, rectangulo4, CSG.SUBTRACTION); // Resta el cilindro 1 al rectángulo
+    var tmp2 = evaluator.evaluate(tmp, rectangulo5, CSG.SUBTRACTION); // Resta el cilindro 2 al resultado
+    var tmp3 = evaluator.evaluate(tmp2, rectangulo6, CSG.SUBTRACTION); // Resta el cilindro 3 al resultado
+    var tmp4 = evaluator.evaluate(tmp3, rectangulo7, CSG.SUBTRACTION); // Resta el cilindro 4 al resultado
+    var tmp5 = evaluator.evaluate(tmp4, rectangulo8, CSG.SUBTRACTION); // Resta el cilindro 5 al resultado
+    var tmp6 = evaluator.evaluate(tmp5, rectangulo2, CSG.ADDITION); // Resta el cilindro 6 al resultado
+    var tmp7 = evaluator.evaluate(tmp6, cilindro1, CSG.ADDITION); // Resta el cilindro 7 al resultado
+    var tmp8 = evaluator.evaluate(tmp7, cilindro2, CSG.ADDITION); // Resta el cilindro 8 al resultado
+    var tmp9 = evaluator.evaluate(tmp8, rectangulo, CSG.ADDITION); // Resta el cilindro 9 al resultado
+    var tmp10 = evaluator.evaluate(tmp9, boton1, CSG.ADDITION); // Resta el cilindro 10 al resultado
+    var tmp11 = evaluator.evaluate(tmp10, boton2, CSG.ADDITION); // Resta el cilindro 11 al resultado
+    var tmp12 = evaluator.evaluate(tmp11, boton3, CSG.ADDITION); // Resta el cilindro 12 al resultado
+    var torre = evaluator.evaluate(tmp12, boton4, CSG.ADDITION); // Resta el cilindro 13 al resultado
+
+    torre.geometry.translate(-2, 0, 0); // Traslada el resultado final
+    this.add(torre); // Añade el resultado final a la escena
+
+
 
 
     
     //realiza las operaciones CSG para restar los cilindros del rectángulo
-    var evaluator = new CSG.Evaluator();
-    var tmp = evaluator.evaluate(rectangulo, cilindro1, CSG.ADDITION); // Resta el cilindro 1 al rectángulo
-    var tmp2 = evaluator.evaluate(tmp, cilindro2, CSG.ADDITION); // Resta el cilindro 2 al resultado
-    var tmp3 = evaluator.evaluate(tmp2, rectangulo2, CSG.ADDITION); // Resta el cilindro 3 al resultado
-    var tmp4 = evaluator.evaluate(tmp3, boton1, CSG.ADDITION); // Resta el cilindro 4 al resultado
-    var tmp5 = evaluator.evaluate(tmp4, boton2, CSG.ADDITION); // Resta el cilindro 5 al resultado
-    var tmp6 = evaluator.evaluate(tmp5, boton3, CSG.ADDITION); // Resta el cilindro 6 al resultado
-    var tmp7 = evaluator.evaluate(tmp6, boton4, CSG.ADDITION); // Resta el cilindro 7 al resultado
+    //var evaluator = new CSG.Evaluator();
+    //var tmp = evaluator.evaluate(rectangulo, cilindro1, CSG.ADDITION); // Resta el cilindro 1 al rectángulo
+    //var tmp2 = evaluator.evaluate(tmp, cilindro2, CSG.ADDITION); // Resta el cilindro 2 al resultado
+    //var tmp3 = evaluator.evaluate(tmp2, rectangulo2, CSG.ADDITION); // Resta el cilindro 3 al resultado
+    //var tmp4 = evaluator.evaluate(tmp3, boton1, CSG.ADDITION); // Resta el cilindro 4 al resultado
+    //var tmp5 = evaluator.evaluate(tmp4, boton2, CSG.ADDITION); // Resta el cilindro 5 al resultado
+    //var tmp6 = evaluator.evaluate(tmp5, boton3, CSG.ADDITION); // Resta el cilindro 6 al resultado
+    //var tmp7 = evaluator.evaluate(tmp6, boton4, CSG.ADDITION); // Resta el cilindro 7 al resultado
 
-    tmp7.geometry.translate(-1.5,0,0); // Rota el resultado final
+    //tmp7.geometry.translate(-1.5,0,0); // Rota el resultado final
 
-    this.add(tmp7); // Añade el resultado final a la escena
+    //this.add(tmp7); // Añade el resultado final a la escena
     
     
 
