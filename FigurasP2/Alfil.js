@@ -1,57 +1,59 @@
 import * as THREE from '../libs/three.module.js'; // Importa la librería Three.js
 import * as CSG from '../libs/three-bvh-csg.js'; // Importa la librería para operaciones CSG (Constructive Solid Geometry)
-
-class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3D
-  constructor(gui, titleGui) {
-    super(); // Llama al constructor de la clase padre
+import { Pieza } from './Pieza.js'; // Importar clase base
+class Alfil extends Pieza {
+  constructor(color, fila, columna, di) {
+    super("Alfil", color, fila, columna, di); // Asigna null en lugar de id aquí
 
     // Define un material con sombreado plano, doble cara y opacidad del 50%
-    this.material = new THREE.MeshNormalMaterial({ 
-      flatShading: true, 
-      side: THREE.DoubleSide, 
-      transparent: false, 
-      opacity: 0.5 
+    this.material = new THREE.MeshNormalMaterial({
+      flatShading: true,
+      side: THREE.DoubleSide,
+      transparent: false,
+      opacity: 0.5
     });
 
-    this.createGUI(gui, titleGui); // Crea la interfaz gráfica de usuario
-    this.createFigura(); // Llama al método para crear la figura
     
+    this.createFigura(); // Llama al método para crear la figura
+
+    this.moverA(fila-1.42, columna ); // Posicionar en el tablero 3D
+    this.translateY(0.2); // Traslada la figura a la posición deseada
   }
 
   createFigura() {
-    
-   
+
+
     /******************************************************************************/
     // Material para los objetos 3D
-     
+
 
     var material = new THREE.MeshNormalMaterial({ flatShading: true });
 
 
     //********************** BASE DE LA FIGURA ***************************
-   
+
     // Dibujamos la base principal que será un rectángulo
 
-    var rectangulo_geom =  new THREE.BoxGeometry(1, 0.40, 1); // Crea un rectángulo
+    var rectangulo_geom = new THREE.BoxGeometry(1, 0.40, 1); // Crea un rectángulo
     var rectangulo = new CSG.Brush(rectangulo_geom, this.material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo); // Añade el rectángulo a la escena
 
 
     // Cilindro 1
-    var cilindro_geom = new THREE.CylinderGeometry(0.35,0.5,0.25,50,1);
-    cilindro_geom.translate(0,0.3,0);
+    var cilindro_geom = new THREE.CylinderGeometry(0.35, 0.5, 0.25, 50, 1);
+    cilindro_geom.translate(0, 0.3, 0);
     var cilindro1 = new CSG.Brush(cilindro_geom, this.material);
     //this.add(cilindro1); // Añade el cilindro a la escena
 
     // Cilindro 2
-    var cilindro_geom2 = new THREE.CylinderGeometry(0.25,0.35,1,50,1);
-    cilindro_geom2.translate(0,0.91,0);
+    var cilindro_geom2 = new THREE.CylinderGeometry(0.25, 0.35, 1, 50, 1);
+    cilindro_geom2.translate(0, 0.91, 0);
     var cilindro2 = new CSG.Brush(cilindro_geom2, this.material);
     //this.add(cilindro2); // Añade el cilindro a la escena
 
     // Cilindro 3
-    var cilindro_geom3 = new THREE.CylinderGeometry(0.33,0.33,0.15,50,1);
-    cilindro_geom3.translate(0,1.4,0);
+    var cilindro_geom3 = new THREE.CylinderGeometry(0.33, 0.33, 0.15, 50, 1);
+    cilindro_geom3.translate(0, 1.4, 0);
     var cilindro3 = new CSG.Brush(cilindro_geom3, this.material);
     //this.add(cilindro3); // Añade el cilindro a la escena
 
@@ -62,20 +64,20 @@ class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3
     //this.add(rectangulo_corte); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
-    var esfera_geom =  new THREE.SphereGeometry(0.25,100,100,1); // Crea un rectángulo
-    esfera_geom.translate(0,1.55,0); // Traslada el rectángulo
+    var esfera_geom = new THREE.SphereGeometry(0.25, 100, 100, 1); // Crea un rectángulo
+    esfera_geom.translate(0, 1.55, 0); // Traslada el rectángulo
     var esfera = new CSG.Brush(esfera_geom, this.material); // Crea un mesh con el rectángulo y el material
     //this.add(esfera); // Añade el rectángulo a la escena
 
     // Cono para la parte superior
-    var cono_geom = new THREE.CylinderGeometry(0,0.2,0.3,100,1);
-    cono_geom.translate(0,1.85,0);
+    var cono_geom = new THREE.CylinderGeometry(0, 0.2, 0.3, 100, 1);
+    cono_geom.translate(0, 1.85, 0);
     var cono = new CSG.Brush(cono_geom, this.material);
     //this.add(cono); // Añade el cono a la escena
 
     var boton1 = this.createBotón();
     boton1.geometry.scale(1, 1.5, 1);
-    boton1.geometry.translate(0,1.99,0);
+    boton1.geometry.translate(0, 1.99, 0);
     //this.add(boton1);
 
     var evaluator = new CSG.Evaluator();
@@ -90,7 +92,7 @@ class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3
     this.add(alfil_final); // Añade el resultado a la escena
 
     //alfil_final.geometry.translate(0, 0, -1.5); // Traslada el resultado a la posición deseada
-    
+
 
   }
 
@@ -199,7 +201,7 @@ class Alfil extends THREE.Object3D { // Define una clase que extiende de Object3
 
     return finalButton; // Retornar el botón
   }
-  
+
   createGUI(gui, titleGui) {
     // Controles de la GUI
     this.guiControls = {

@@ -1,10 +1,10 @@
 import * as THREE from '../libs/three.module.js'; // Importa la librería Three.js
 import * as CSG from '../libs/three-bvh-csg.js'; // Importa la librería para operaciones CSG (Constructive Solid Geometry)
-import { Alfil } from './Alfil.js'
+import { Pieza } from './Pieza.js'; // Importar clase base
 
-class Torre extends THREE.Object3D { // Define una clase que extiende de Object3D
-  constructor(gui, titleGui) {
-    super(); // Llama al constructor de la clase padre
+class Torre extends Pieza {
+  constructor( color, fila, columna,di) {
+    super("Torre", color, fila, columna,di); // Asigna null en lugar de id aquí
 
     // Define un material con sombreado plano, doble cara y opacidad del 50%
     this.material = new THREE.MeshNormalMaterial({ 
@@ -14,8 +14,11 @@ class Torre extends THREE.Object3D { // Define una clase que extiende de Object3
       opacity: 0.5 
     });
 
-    this.createGUI(gui, titleGui); // Crea la interfaz gráfica de usuario
+   
     this.createFigura(); // Llama al método para crear la figura
+
+    this.moverA(fila -1.42, columna + 1.425); // Posicionar en el tablero 3D
+    this.translateY(0.2); // Traslada la figura a la posición deseada
     
   }
 

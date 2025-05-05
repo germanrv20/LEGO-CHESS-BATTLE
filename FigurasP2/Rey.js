@@ -1,9 +1,11 @@
 import * as THREE from '../libs/three.module.js';
 import * as CSG from '../libs/three-bvh-csg.js';
+import { Pieza } from './Pieza.js'; // Importar clase base
 
-class Rey extends THREE.Object3D {
-  constructor(gui, titleGui) {
-    super();
+class Rey extends Pieza{
+  constructor( color, fila, columna,di) {
+    super("rey", color, fila, columna,di); // Asigna null en lugar de id aquí
+ 
 
     // 🛠 Definir el material
     const material = new THREE.MeshNormalMaterial();
@@ -88,6 +90,8 @@ class Rey extends THREE.Object3D {
     const Objeto = new THREE.Mesh(temp11.geometry, material);
     Objeto.geometry.translate(0, 0,-2); // Escalar el objeto
     this.add(Objeto);
+
+    this.moverA(fila, columna); // Posicionar en el tablero 3D
 
   }
 

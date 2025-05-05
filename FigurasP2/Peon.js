@@ -1,12 +1,24 @@
 import * as THREE from '../libs/three.module.js';
 import * as CSG from '../libs/three-bvh-csg.js';
+import { Pieza } from './Pieza.js'; // Importar clase base
+class Peon extends Pieza {
+  constructor(color, fila, columna, di) {
+    super("peon", color, fila, columna, di); // Asigna null en lugar de id aquí
 
-class Peon extends THREE.Object3D {
-  constructor(gui, titleGui) {
-    super();
+    this.createFigura(); // Llama al método para crear la figura
 
+    
+    
+      this.moverA(fila -1.42 , columna -1.4); // Posicionar en el tablero 3D
+    this.translateY(0.2); // Traslada la figura a la posición deseada
+    
+
+
+  }
+
+  createFigura() {
     // 🛠 Definir el material
-    const material = new THREE.MeshNormalMaterial({flatShading: true});
+    const material = new THREE.MeshNormalMaterial({ flatShading: true });
     // Dibujamos la base principal que será un rectángulo
 
     var base = new THREE.BoxGeometry(1, 1, 0.40); // Crea un rectángulo
@@ -27,10 +39,10 @@ class Peon extends THREE.Object3D {
 
     const shapeCabeza = new THREE.Shape();
     shapeCabeza.lineTo(-0.25, 0);
-    shapeCabeza.quadraticCurveTo(-0.5, 0, -0.5, 0.18); 
-    shapeCabeza.lineTo(-0.5, 0.6);                    
-    shapeCabeza.quadraticCurveTo(-0.5, 0.8, -0.25, 0.8); 
-    shapeCabeza.lineTo(0, 0.8);                        
+    shapeCabeza.quadraticCurveTo(-0.5, 0, -0.5, 0.18);
+    shapeCabeza.lineTo(-0.5, 0.6);
+    shapeCabeza.quadraticCurveTo(-0.5, 0.8, -0.25, 0.8);
+    shapeCabeza.lineTo(0, 0.8);
 
 
 
@@ -44,9 +56,11 @@ class Peon extends THREE.Object3D {
     var cuerpo = new THREE.LatheGeometry(this.lathePoints, 32, 0, Math.PI * 2);
     cuerpo.translate(0, 0.2, 0);
     cuerpo.scale(0.45, 0.45, 0.45); // Escalar el cuerpo
+   
     var cabeza = new THREE.LatheGeometry(shapeCabeza.extractPoints(6).shape, 32, 0, Math.PI * 2);
     cabeza.translate(0, 3.2, 0);
     cabeza.scale(0.45, 0.45, 0.45);
+   
     // Aplicar CS4
     const baseGeometryBrush = new CSG.Brush(base);
     const cuerpoGeometryBrush = new CSG.Brush(cuerpo);
@@ -64,8 +78,12 @@ class Peon extends THREE.Object3D {
     Objeto.geometry.translate(2, 0, 0); // Ajustar la posición del objeto
     this.add(Objeto);
 
-  }
+  
 
+
+
+
+  }
   update() {
     // Método de actualización si es necesario
   }

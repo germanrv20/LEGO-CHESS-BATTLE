@@ -51,19 +51,20 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Torre(this.gui, "Controles de la Caja");
+    this.model = new Torre("blanco", -1, 20, 20);
     this.model1 = new Lego(this.gui, "Controles del Lego");
-    this.model2 = new Alfil(this.gui, "Controles del Alfil");
+    this.model2 = new Alfil("blanco", -1, 20,20);
     this.model3 = new Tablero(this.gui, "Controles del Tablero");
-    this.model4 = new Rey(this.gui, "Controles del Rey");
-    this.model5 = new Peon(this.gui, "Controles del Peon");
+    this.model3.position.set(0, 0, 0);
+    this.model4 = new Rey("blanco", -1, 20,20); //la pone os lejos 
+    this.model5 = new Peon("blanco", -1, 20,20);
     // Se añade el modelo a la escena
     this.add (this.model);
     this.add (this.model1);
     this.add (this.model2);
     this.add (this.model3);
     this.add (this.model4);
-    this.add (this.model5);
+   this.add (this.model5);
   }
   
   initStats() {
@@ -223,7 +224,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    this.model.update();
+    //this.model.update();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
