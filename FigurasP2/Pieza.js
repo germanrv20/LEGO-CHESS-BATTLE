@@ -23,12 +23,7 @@ import * as CSG from '../libs/three-bvh-csg.js';
 
         this.position.x =  columna *1.4  + 0.7 ; // Ajustar posición en x
         this.position.z =  fila  *1.4 + 2.7 ; // Ajustar posición en z
-       
         
-        
-        this.position.y = 0.2; // Ajustar altura
-        
-     
     }
   
     moverA(fila, columna) {

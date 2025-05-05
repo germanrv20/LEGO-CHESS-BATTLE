@@ -2,14 +2,18 @@ import * as THREE from '../libs/three.module.js';
 import * as CSG from '../libs/three-bvh-csg.js';
 import { Pieza } from './Pieza.js'; // Importar clase base
 
-class Rey extends Pieza{
-  constructor( color, fila, columna,di) {
-    super("rey", color, fila, columna,di); // Asigna null en lugar de id aquí
- 
+class Rey extends Pieza {
+  constructor(color, fila, columna, di) {
+    super("rey", color, fila, columna, di); // Asigna null en lugar de id aquí
+    this.createFigura(); // Llama al método para crear la figura
+    this.moverA(fila, columna); // Posicionar en el tablero 3D
 
+  }
+  createFigura() {
     // 🛠 Definir el material
     const material = new THREE.MeshNormalMaterial();
     // Dibujamos la base principal que será un rectángulo
+
 
     var base = new THREE.BoxGeometry(1, 1, 0.40); // Crea un rectángulo
     base.rotateX(Math.PI / 2); // Rota el rectángulo
@@ -18,17 +22,17 @@ class Rey extends Pieza{
     l1.rotateX(Math.PI / 2);
     l1.translate(0, 0.3, 0);
 
-    var piramide1 =  new THREE.ConeGeometry(0.57, 0.6, 4);
+    var piramide1 = new THREE.ConeGeometry(0.57, 0.6, 4);
     piramide1.translate(0, 0.7, 0);
     piramide1.rotateY(Math.PI / 4);
 
-    var piramide2 =  new THREE.ConeGeometry(0.4, 0.45, 4);
+    var piramide2 = new THREE.ConeGeometry(0.4, 0.45, 4);
     piramide2.translate(0, 0.85, 0);
     piramide2.rotateY(Math.PI / 4);
 
     var zonamedia = new THREE.BoxGeometry(0.3, 0.8, 0.3);
     zonamedia.translate(0, 0.9, 0);
-    
+
 
     var zonamedia2 = new THREE.BoxGeometry(0.6, 0.1, 0.6);
     zonamedia2.translate(0, 1.25, 0);
@@ -37,11 +41,11 @@ class Rey extends Pieza{
     zonamedia3.translate(0, 1.35, 0);
 
     var piramideInv = new THREE.ConeGeometry(0.3, 0.6, 4);
-    piramideInv.rotateX(Math.PI );
+    piramideInv.rotateX(Math.PI);
     piramideInv.rotateY(Math.PI / 4);
     piramideInv.translate(0, 1.35, 0);
-    
-    var zonaAlta  = new THREE.BoxGeometry(0.5, 0.1, 0.5);
+
+    var zonaAlta = new THREE.BoxGeometry(0.5, 0.1, 0.5);
     zonaAlta.translate(0, 1.7, 0);
 
     var cilindro = new THREE.CylinderGeometry(0.1, 0.1, 0.3, 15);
@@ -88,18 +92,18 @@ class Rey extends Pieza{
 
     // Crear un Mesh con la geometría resultante y aplicar el material
     const Objeto = new THREE.Mesh(temp11.geometry, material);
-    Objeto.geometry.translate(0, 0,-2); // Escalar el objeto
+    Objeto.geometry.translate(0, 0.4, -2); // Escalar el objeto
     this.add(Objeto);
 
-    this.moverA(fila, columna); // Posicionar en el tablero 3D
-
   }
+
+
 
 
   createBotón() {
     // Crear material para las geometrías
     const material = new THREE.MeshNormalMaterial({ flatShading: true });
-    var material2 = new THREE.MeshStandardMaterial({ color: 'grey'});
+    var material2 = new THREE.MeshStandardMaterial({ color: 'grey' });
 
     // Función auxiliar para crear letras con extrusión
     const createLetter = (shapeCallback, depth = 0.1, translate = { x: 0, y: 0 }) => {

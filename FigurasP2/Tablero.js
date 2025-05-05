@@ -60,6 +60,7 @@ class Tablero extends THREE.Object3D {
       this.tablero[pieza.fila][pieza.columna] = pieza;
 
       // Mover la pieza visualmente en 3D
+      
       pieza.moverA(nuevaFila, nuevaColumna);
     }
   }
@@ -103,10 +104,38 @@ class Tablero extends THREE.Object3D {
     
     
 
-    // Coloca las piezas en la matriz de piezas y en la escena
-    this.tablero[0][0] = reyBlanco;
-    this.tablero[0][1] = reyNegro;
-    
+    // Coloca las piezas en la matriz de piezas como s ehan definido antes
+    this.tablero[7][3] = reyBlanco;
+    this.tablero[0][3] = reyNegro;
+    this.tablero[0][0] = TorreNegroA;
+    this.tablero[7][0] = TorreBlancaA;
+    this.tablero[0][7] = TorreNegroB;
+    this.tablero[7][7] = TorreBlancaB;
+    this.tablero[6][0] = PeonA1;
+    this.tablero[6][1] = PeonA2;
+    this.tablero[6][2] = PeonA3;
+    this.tablero[6][3] = PeonA4;
+    this.tablero[6][4] = PeonA5;
+    this.tablero[6][5] = PeonA6;
+    this.tablero[6][6] = PeonA7;
+    this.tablero[6][7] = PeonA8;
+    this.tablero[1][0] = PeonB1;
+    this.tablero[1][1] = PeonB2;
+    this.tablero[1][2] = PeonB3;
+    this.tablero[1][3] = PeonB4;
+    this.tablero[1][4] = PeonB5;
+    this.tablero[1][5] = PeonB6;
+    this.tablero[1][6] = PeonB7;
+    this.tablero[1][7] = PeonB8;
+    this.tablero[0][2] = AlfilA1;
+    this.tablero[0][5] = AlfilA2;
+    this.tablero[7][2] = AlfilB1;
+    this.tablero[7][5] = AlfilB2;
+
+   
+    //this.moverPieza(reyBlanco, 5, 3); // Mueve el rey blanco a su posición inicial
+    //this.moverPieza(AlfilA1, 4, 4);
+    //this.moverPieza(PeonA1, 4, 5);
 
     // Añadir las piezas a la escena
     this.add(reyBlanco);

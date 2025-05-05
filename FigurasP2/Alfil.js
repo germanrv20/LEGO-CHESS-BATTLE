@@ -16,9 +16,11 @@ class Alfil extends Pieza {
     
     this.createFigura(); // Llama al método para crear la figura
 
-    this.moverA(fila-1.42, columna ); // Posicionar en el tablero 3D
-    this.translateY(0.2); // Traslada la figura a la posición deseada
+    this.moverA(fila, columna ); // Posicionar en el tablero 3D
+    
   }
+
+  
 
   createFigura() {
 
@@ -88,6 +90,8 @@ class Alfil extends Pieza {
     var tmp5 = evaluator.evaluate(tmp4, cono, CSG.ADDITION);
     var tmp6 = evaluator.evaluate(tmp5, rectangulo_corte, CSG.SUBTRACTION);
     var alfil_final = evaluator.evaluate(tmp6, boton1, CSG.ADDITION);
+
+    alfil_final.geometry.translate(0 , 0.4, - 2); // Traslada el resultado final
 
     this.add(alfil_final); // Añade el resultado a la escena
 

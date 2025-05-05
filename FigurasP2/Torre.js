@@ -17,10 +17,14 @@ class Torre extends Pieza {
    
     this.createFigura(); // Llama al método para crear la figura
 
-    this.moverA(fila -1.42, columna + 1.425); // Posicionar en el tablero 3D
-    this.translateY(0.2); // Traslada la figura a la posición deseada
+    this.moverA(fila, columna ); // Posicionar en el tablero 3D
+   
     
   }
+
+
+
+  
 
   createFigura() {
     
@@ -138,7 +142,7 @@ class Torre extends Pieza {
     var tmp12 = evaluator.evaluate(tmp11, boton3, CSG.ADDITION); // Resta el cilindro 12 al resultado
     var torre = evaluator.evaluate(tmp12, boton4, CSG.ADDITION); // Resta el cilindro 13 al resultado
 
-    torre.geometry.translate(-2, 0, 0); // Traslada el resultado final
+    torre.geometry.translate(0 , 0.4, - 2); // Traslada el resultado final
     this.add(torre); // Añade el resultado final a la escena
 
 

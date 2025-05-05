@@ -9,12 +9,14 @@ class Peon extends Pieza {
 
     
     
-      this.moverA(fila -1.42 , columna -1.4); // Posicionar en el tablero 3D
-    this.translateY(0.2); // Traslada la figura a la posición deseada
+    this.moverA(fila, columna ); // Posicionar en el tablero 3D
+   
     
 
 
   }
+
+ 
 
   createFigura() {
     // 🛠 Definir el material
@@ -75,7 +77,7 @@ class Peon extends Pieza {
     const Objeto = new THREE.Mesh(temp2.geometry, material);
 
     Objeto.geometry.scale(1, 0.8, 1); // Escalar el objeto
-    Objeto.geometry.translate(2, 0, 0); // Ajustar la posición del objeto
+    Objeto.geometry.translate(0, 0.4, -2); // Ajustar la posición del objeto
     this.add(Objeto);
 
   
