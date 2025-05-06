@@ -4,17 +4,25 @@ import { Pieza } from './Pieza.js'; // Importar clase base
 
 class Rey extends Pieza {
   constructor(color, fila, columna, di) {
+
     super("rey", color, fila, columna, di); // Asigna null en lugar de id aquí
     this.createFigura(); // Llama al método para crear la figura
     this.moverA(fila, columna); // Posicionar en el tablero 3D
 
   }
   createFigura() {
-    // 🛠 Definir el material
-    const material = new THREE.MeshNormalMaterial();
+    
+    // Material para los objetos 3D
+    let colorpieza;
+
+    if (this.color === "negro") {
+      colorpieza = 0x5c5c5c; // Negro
+    } else {
+      colorpieza = 0xffffff; // Blanco por defecto
+    }
+    const material = new THREE.MeshStandardMaterial({ color: colorpieza });
+
     // Dibujamos la base principal que será un rectángulo
-
-
     var base = new THREE.BoxGeometry(1, 1, 0.40); // Crea un rectángulo
     base.rotateX(Math.PI / 2); // Rota el rectángulo
 

@@ -4,27 +4,12 @@ import { Pieza } from './Pieza.js'; // Importar clase base
 
 class Torre extends Pieza {
   constructor( color, fila, columna,di) {
-    super("Torre", color, fila, columna,di); // Asigna null en lugar de id aquí
 
-    // Define un material con sombreado plano, doble cara y opacidad del 50%
-    this.material = new THREE.MeshNormalMaterial({ 
-      flatShading: true, 
-      side: THREE.DoubleSide, 
-      transparent: false, 
-      opacity: 0.5 
-    });
-
-   
+    super("Torre", color, fila, columna,di); // Asigna null en lugar de id aquí   
     this.createFigura(); // Llama al método para crear la figura
-
     this.moverA(fila, columna ); // Posicionar en el tablero 3D
    
-    
   }
-
-
-
-  
 
   createFigura() {
     
@@ -32,9 +17,14 @@ class Torre extends Pieza {
     /******************************************************************************/
     // Material para los objetos 3D
      
+    let colorpieza;
 
-    var material = new THREE.MeshNormalMaterial({ flatShading: true });
-
+    if (this.color === "negro") {
+      colorpieza = 0x5c5c5c; // Negro
+    } else {
+      colorpieza = 0xffffff; // Blanco por defecto
+    }
+    const material = new THREE.MeshStandardMaterial({ color: colorpieza });
 
 
     //********************** BASE DE LA FIGURA ***************************
@@ -42,68 +32,68 @@ class Torre extends Pieza {
     // Dibujamos la base principal que será un rectángulo
 
     var rectangulo_geom =  new THREE.BoxGeometry(1, 0.40, 1); // Crea un rectángulo
-    var rectangulo = new CSG.Brush(rectangulo_geom, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo = new CSG.Brush(rectangulo_geom, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo); // Añade el rectángulo a la escena
 
 
     // Cilindro 1
     var cilindro_geom = new THREE.CylinderGeometry(0.4,0.5,0.25,50,1);
     cilindro_geom.translate(0,0.3,0);
-    var cilindro1 = new CSG.Brush(cilindro_geom, this.material);
+    var cilindro1 = new CSG.Brush(cilindro_geom, material);
     //this.add(cilindro1); // Añade el cilindro a la escena
 
     // Cilindro 2
     var cilindro_geom2 = new THREE.CylinderGeometry(0.35,0.4,1,50,1);
     cilindro_geom2.translate(0,0.91,0);
-    var cilindro2 = new CSG.Brush(cilindro_geom2, this.material);
+    var cilindro2 = new CSG.Brush(cilindro_geom2, material);
     //this.add(cilindro2); // Añade el cilindro a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom2 =  new THREE.BoxGeometry(0.8, 0.20, 0.8); // Crea un rectángulo
     rectangulo_geom2.translate(0,1.5,0); // Traslada el rectángulo
-    var rectangulo2 = new CSG.Brush(rectangulo_geom2, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo2 = new CSG.Brush(rectangulo_geom2, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo2); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom3 =  new THREE.BoxGeometry(0.8, 0.20, 0.8); // Crea un rectángulo
     rectangulo_geom3.translate(0,1.7,0); // Traslada el rectángulo
-    var rectangulo3 = new CSG.Brush(rectangulo_geom3, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo3 = new CSG.Brush(rectangulo_geom3, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo3); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom4 =  new THREE.BoxGeometry(0.15, 0.20, 0.8); // Crea un rectángulo
     rectangulo_geom4.translate(-0.18,1.7,0); // Traslada el rectángulo
-    var rectangulo4 = new CSG.Brush(rectangulo_geom4, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo4 = new CSG.Brush(rectangulo_geom4, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo4); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom5 =  new THREE.BoxGeometry(0.15, 0.20, 0.8); // Crea un rectángulo
     rectangulo_geom5.translate(0.17,1.7,0); // Traslada el rectángulo
-    var rectangulo5 = new CSG.Brush(rectangulo_geom5, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo5 = new CSG.Brush(rectangulo_geom5, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo5); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom6 =  new THREE.BoxGeometry(0.8, 0.20, 0.15); // Crea un rectángulo
     rectangulo_geom6.translate(0,1.7,-0.17); // Traslada el rectángulo
-    var rectangulo6 = new CSG.Brush(rectangulo_geom6, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo6 = new CSG.Brush(rectangulo_geom6, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo6); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom7 =  new THREE.BoxGeometry(0.8, 0.20, 0.15); // Crea un rectángulo
     rectangulo_geom7.translate(0,1.7,0.17); // Traslada el rectángulo
-    var rectangulo7 = new CSG.Brush(rectangulo_geom7, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo7 = new CSG.Brush(rectangulo_geom7, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo7); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom4 =  new THREE.BoxGeometry(0.15, 0.20, 0.8); // Crea un rectángulo
     rectangulo_geom4.translate(-0.17,1.7,0); // Traslada el rectángulo
-    var rectangulo4 = new CSG.Brush(rectangulo_geom4, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo4 = new CSG.Brush(rectangulo_geom4, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo4); // Añade el rectángulo a la escena
 
     // Rectangulo para la parte superior
     var rectangulo_geom8 =  new THREE.BoxGeometry(0.25, 0.2, 0.25); // Crea un rectángulo
     rectangulo_geom8.translate(0,1.7,0); // Traslada el rectángulo
-    var rectangulo8 = new CSG.Brush(rectangulo_geom8, this.material); // Crea un mesh con el rectángulo y el material
+    var rectangulo8 = new CSG.Brush(rectangulo_geom8, material); // Crea un mesh con el rectángulo y el material
     //this.add(rectangulo8); // Añade el rectángulo a la escena
         
     var boton1 = this.createBotón();
@@ -142,8 +132,10 @@ class Torre extends Pieza {
     var tmp12 = evaluator.evaluate(tmp11, boton3, CSG.ADDITION); // Resta el cilindro 12 al resultado
     var torre = evaluator.evaluate(tmp12, boton4, CSG.ADDITION); // Resta el cilindro 13 al resultado
 
+    const Objeto = new THREE.Mesh(torre.geometry, material);
+
     torre.geometry.translate(0 , 0.4, - 2); // Traslada el resultado final
-    this.add(torre); // Añade el resultado final a la escena
+    this.add(Objeto); // Añade el resultado final a la escena
 
 
 

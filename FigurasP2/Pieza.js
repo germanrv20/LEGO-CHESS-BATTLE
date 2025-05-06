@@ -5,7 +5,7 @@ import * as CSG from '../libs/three-bvh-csg.js';
 
  class Pieza extends THREE.Object3D {
   
-    constructor( tipo, color, fila, columna,di) {
+    constructor( tipo, color, fila, columna, di) {
       super();
      
       this.tipo = tipo; // "rey", "torre", etc.
@@ -21,8 +21,11 @@ import * as CSG from '../libs/three-bvh-csg.js';
       // Suponiendo cada casilla mide 1.4 unidad y o.4 d ealto
         // y el tablero es un cuadrado de 8x8
 
-        this.position.x =  columna *1.4  + 0.7 ; // Ajustar posición en x
-        this.position.z =  fila  *1.4 + 2.7 ; // Ajustar posición en z
+        const size = 1.4;
+        const offset = (8 * size) / 2 - size / 2;
+
+        this.position.x = columna * size - offset;
+        this.position.z = fila * size - offset + 2;
         
     }
   

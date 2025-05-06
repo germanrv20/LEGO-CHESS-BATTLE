@@ -4,15 +4,12 @@ import * as CSG from '../libs/three-bvh-csg.js'; // Importa la librería para op
 import { Pieza } from './Pieza.js'; // Importar clase base
 
 class Caballo extends Pieza {
+
     constructor(color, fila, columna, di) {
+
         super("caballo", color, fila, columna, di); // Asigna null en lugar de id aquí
-
-
-
         this.createFigura(); // Llama al método para crear la figura
-
         this.moverA(fila, columna); // Posicionar en el tablero 3D
-
 
     }
 

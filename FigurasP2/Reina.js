@@ -1,41 +1,70 @@
-
-import * as THREE from '../libs/three.module.js'; // Importa la librería Three.js
-import * as CSG from '../libs/three-bvh-csg.js'; // Importa la librería para operaciones CSG (Constructive Solid Geometry)
-import { Pieza } from './Pieza.js'; // Importar clase base
+import * as THREE from '../libs/three.module.js';
+import { OBJLoader } from '../libs/OBJLoader.js';
+import { Pieza } from './Pieza.js';
 
 class Reina extends Pieza {
-    constructor(color, fila, columna, di) {
-        super("Reina", color, fila, columna, di); // Asigna null en lugar de id aquí
+  
+  constructor(color, fila, columna, di) {
 
+    super("Reina", color, fila, columna, di);
+    this.createFigura();
+    this.moverA(fila, columna);
 
+  }
 
-        this.createFigura(); // Llama al método para crear la figura
+  createFigura() {
 
-        this.moverA(fila, columna); // Posicionar en el tablero 3D
+    // Material para los objetos 3D
 
+    let colorpieza;
 
+    if (this.color === "negro") {
+      colorpieza = 0x5c5c5c;
+    } else {
+      colorpieza = 0xffffff;
     }
 
-
-    createFigura() {
-
-        //********************** BASE DE LA FIGURA ***************************
-
-        // Dibujamos la base principal que será un rectángulo
-
-        var rectangulo_geom = new THREE.BoxGeometry(1, 0.40, 1); // Crea un rectángulo
-        // Crea un mesh con el rectángulo y el material
-        var rectangulo = new THREE.Mesh(rectangulo_geom, new THREE.MeshStandardMaterial({ color: 0xFF0000 })); // Color
+    this.material = new THREE.MeshStandardMaterial({ color: colorpieza });
 
 
+    const loader = new OBJLoader();
 
+    const piezas = [
+      'cabeza.obj',
+      'cuerpo.obj',
+      'brazo_izq.obj',
+      'brazo_der.obj',
+      'pierna_izq.obj',
+      'pierna_der.obj'
+    ];
 
-        rectangulo.geometry.translate(0, 0.4, - 2); // Traslada el resultado final IMPORTANTE DEJA ESTO ASI PARA Q CUADRE EN TODAS
-        this.add(rectangulo); // Añade el rectángulo a la figura
+    piezas.forEach((nombre) => {
+      loader.load(
+        `./Piezas_reina/${nombre}`,
+        (obj) => {
 
+          obj.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = this.material;
+            }
+          });
 
+          obj.scale.set(0.6, 0.6, 0.6);
+          obj.rotateY(Math.PI / 2);
+          if (this.color === "negro") {
+            obj.rotateY(Math.PI);
+          }
+          obj.position.set(0, 0.2, -2);
 
-    }
+          this.add(obj);
+        }
+      );
+    });
+  }
 
+  update() {
+    // Lógica de actualización futura
+  }
 }
-export { Reina }; // Exporta la clase para usarla en otros archivos
+
+export { Reina };
