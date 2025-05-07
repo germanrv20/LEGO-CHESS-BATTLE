@@ -43,6 +43,8 @@ class Reina extends Pieza {
         `./Piezas_reina/${nombre}`,
         (obj) => {
 
+          console.log(`✅ ${nombre} cargado correctamente`);
+
           obj.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               child.material = this.material;
