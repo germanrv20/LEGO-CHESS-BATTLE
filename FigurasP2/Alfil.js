@@ -12,6 +12,48 @@ class Alfil extends Pieza {
     
   }
 
+  movimientosValidos(tablero) {
+    const movimientos = [];
+    const fila = this.fila;
+    const columna = this.columna;
+  
+    // Direcciones diagonales: arriba-izquierda, arriba-derecha, abajo-izquierda, abajo-derecha
+    const direcciones = [
+      [-1, -1], // Arriba izquierda
+      [-1, 1],  // Arriba derecha
+      [1, -1],  // Abajo izquierda
+      [1, 1]    // Abajo derecha
+    ];
+  
+    // Comprobar todas las direcciones diagonales
+    for (const [dFila, dColumna] of direcciones) {
+      let i = fila + dFila;
+      let j = columna + dColumna;
+  
+      // Mover en la dirección de la diagonal
+      while (i >= 0 && i < 8 && j >= 0 && j < 8) {
+        const pieza = tablero[i][j];
+  
+        // Si la casilla está vacía, es un movimiento válido
+        if (pieza === null) {
+          movimientos.push({ fila: i, columna: j });
+        } else {
+          // Si hay una pieza del color contrario, se puede capturar
+          if (pieza.color !== this.color) {
+            movimientos.push({ fila: i, columna: j });
+          }
+          break; // Si hay una pieza, no podemos seguir moviéndonos en esa dirección
+        }
+  
+        // Avanzar a la siguiente casilla en la diagonal
+        i += dFila;
+        j += dColumna;
+      }
+    }
+  
+    return movimientos;
+  }
+  
   
 
   createFigura() {

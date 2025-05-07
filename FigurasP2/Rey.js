@@ -11,7 +11,7 @@ class Rey extends Pieza {
 
   }
   createFigura() {
-    
+
     // Material para los objetos 3D
     let colorpieza;
 
@@ -104,6 +104,43 @@ class Rey extends Pieza {
     this.add(Objeto);
 
   }
+
+  movimientosValidos(tablero) {
+    const movimientos = [];
+    const fila = this.fila;
+    const columna = this.columna;
+
+    // Movimientos posibles del rey: 8 direcciones
+    const direcciones = [
+      [-1, 0], // Arriba
+      [1, 0],  // Abajo
+      [0, -1], // Izquierda
+      [0, 1],  // Derecha
+      [-1, -1], // Arriba izquierda
+      [-1, 1],  // Arriba derecha
+      [1, -1],  // Abajo izquierda
+      [1, 1]    // Abajo derecha
+    ];
+
+    // Comprobar todas las direcciones
+    for (const [dFila, dColumna] of direcciones) {
+      const nuevaFila = fila + dFila;
+      const nuevaColumna = columna + dColumna;
+
+      // Verificar si la nueva posición está dentro del tablero
+      if (nuevaFila >= 0 && nuevaFila < 8 && nuevaColumna >= 0 && nuevaColumna < 8) {
+        const pieza = tablero[nuevaFila][nuevaColumna];
+
+        // Si la casilla está vacía o tiene una pieza del color contrario, es un movimiento válido
+        if (pieza === null || pieza.color !== this.color) {
+          movimientos.push({ fila: nuevaFila, columna: nuevaColumna });
+        }
+      }
+    }
+
+    return movimientos;
+  }
+
 
 
 
