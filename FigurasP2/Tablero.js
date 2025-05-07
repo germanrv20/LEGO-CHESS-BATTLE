@@ -24,9 +24,74 @@ class Tablero extends THREE.Object3D {
     this.createFigura();
     this.createGUI(gui, titleGui);
 
+
+    this.piezaSeleccionada = null;
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+
+
     // Ejemplo de movimiento
     // this.moverPieza(this.reyBlanco, 4, 4);
   }
+
+  handleClick(event, camera, domElement) {
+    const rect = domElement.getBoundingClientRect();
+    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  
+    this.raycaster.setFromCamera(this.mouse, camera);
+  
+    const intersects = this.raycaster.intersectObjects(this.children, true);
+  
+    if (intersects.length > 0) {
+      let objeto = intersects[0].object;
+  
+      // Buscar hacia arriba hasta encontrar una pieza con getTipo
+      while (objeto && !(objeto instanceof THREE.Object3D && 'getTipo' in objeto)) {
+        objeto = objeto.parent;
+      }
+  
+      if (objeto && 'getTipo' in objeto) {
+        this.piezaSeleccionada = objeto;
+        console.log(`Seleccionada: ${objeto.getTipo()} ${objeto.getColor()} en (${objeto.getFila()}, ${objeto.getColumna()})`);
+        return;
+      }
+    }
+  
+    // Si se hizo clic en una casilla vacía
+    const destino = this.getCasillaDesdeMouse(this.raycaster);
+    if (this.piezaSeleccionada && destino) {
+      const { fila, columna } = destino;
+      if (this.tablero[fila][columna] === null) {
+        this.moverPieza(this.piezaSeleccionada, fila, columna);
+        this.piezaSeleccionada = null;
+      }
+    }
+  }
+
+
+  getCasillaDesdeMouse(raycaster) {
+    const plano = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const intersect = new THREE.Vector3();
+    raycaster.ray.intersectPlane(plano, intersect);
+  
+    const size = 1.4;
+    const offset = (8 * size) / 2;
+  
+    const x = intersect.x + offset;
+    const z = intersect.z + offset;
+  
+    const columna = Math.floor(x / size);
+    const fila = Math.floor(z / size);
+  
+    if (fila >= 0 && fila < 8 && columna >= 0 && columna < 8) {
+      return { fila, columna };
+    }
+  
+    return null;
+  }
+  
+  
 
   crearTablero() {
     for (let fila = 0; fila < 8; fila++) {
@@ -97,7 +162,7 @@ class Tablero extends THREE.Object3D {
       this.peonNegro0, this.peonNegro1, this.peonNegro2, this.peonNegro3,
       this.peonNegro4, this.peonNegro5, this.peonNegro6, this.peonNegro7
     ];
-    
+
 
     piezas.forEach(pieza => {
       this.tablero[pieza.fila][pieza.columna] = pieza;
@@ -114,7 +179,7 @@ class Tablero extends THREE.Object3D {
     }
   }
 
-  
+
   createFigura() {
     const size = 1.4;
     const geometry = new THREE.BoxGeometry(size, 0.4, size);
@@ -136,6 +201,9 @@ class Tablero extends THREE.Object3D {
       }
     }
   }
+
+
+
 
   createGUI(gui, titleGui) {
     this.guiControls = {
