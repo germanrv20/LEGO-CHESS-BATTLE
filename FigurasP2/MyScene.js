@@ -70,9 +70,6 @@ class MyScene extends THREE.Scene {
     this.add (this.model6);
    
   }
-
-
-  
   
   initStats() {
   
@@ -252,10 +249,6 @@ $(function () {
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener ("resize", () => scene.onWindowResize());
   
-  window.addEventListener("click", (event) => {
-    scene.model3.handleClick(event, scene.camera, scene.renderer.domElement);
-  });
-
   // Que no se nos olvide, la primera visualización.
   scene.update();
 });

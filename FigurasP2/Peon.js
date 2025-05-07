@@ -12,47 +12,6 @@ class Peon extends Pieza {
     this.moverA(fila, columna ); // Posicionar en el tablero 3D
   }
 
-  movimientosValidos(tablero) {
-    const movimientos = [];
-    const fila = this.fila;
-    const columna = this.columna;
-    const direccion = this.color === "blanco" ? -1 : 1; // blanco sube, negro baja
-  
-    const filaAdelante = fila + direccion;
-  
-    // Movimiento de 1 casilla adelante
-    if (filaAdelante >= 0 && filaAdelante < 8 && tablero[filaAdelante][columna] === null) {
-      movimientos.push({ fila: filaAdelante, columna });
-  
-      // Movimiento de 2 casillas si está en la fila inicial
-      const filaInicial = this.color === "blanco" ? 6 : 1;
-      const fila2Adelante = fila + 2 * direccion;
-      if (fila === filaInicial && tablero[fila2Adelante][columna] === null) {
-        movimientos.push({ fila: fila2Adelante, columna });
-      }
-    }
-  
-    // Captura en diagonal izquierda
-    const colIzq = columna - 1;
-    if (colIzq >= 0 && filaAdelante >= 0 && filaAdelante < 8) {
-      const pieza = tablero[filaAdelante][colIzq];
-      if (pieza && pieza.color !== this.color) {
-        movimientos.push({ fila: filaAdelante, columna: colIzq });
-      }
-    }
-  
-    // Captura en diagonal derecha
-    const colDer = columna + 1;
-    if (colDer < 8 && filaAdelante >= 0 && filaAdelante < 8) {
-      const pieza = tablero[filaAdelante][colDer];
-      if (pieza && pieza.color !== this.color) {
-        movimientos.push({ fila: filaAdelante, columna: colDer });
-      }
-    }
-  
-    return movimientos;
-  }
-  
  
 
   createFigura() {

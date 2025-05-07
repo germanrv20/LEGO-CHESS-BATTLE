@@ -18,170 +18,15 @@ class Tablero extends THREE.Object3D {
 
     this.tablero = [];
     this.piezas = []; // opcional si quieres mantener una lista
-    this.resaltados = []; // Array para almacenar las casillas resaltadas
 
     this.crearTablero();
     this.colocarPiezasIniciales();
     this.createFigura();
     this.createGUI(gui, titleGui);
 
-
-    this.piezaSeleccionada = null;
-    this.raycaster = new THREE.Raycaster();
-    this.mouse = new THREE.Vector2();
-
-
     // Ejemplo de movimiento
     // this.moverPieza(this.reyBlanco, 4, 4);
   }
-  handleClick(event, camera, domElement) {
-    const rect = domElement.getBoundingClientRect();
-    this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-    this.raycaster.setFromCamera(this.mouse, camera);
-
-    const intersects = this.raycaster.intersectObjects(this.children, true);
-
-    if (intersects.length > 0) {
-      let objeto = intersects[0].object;
-
-      // Buscar hacia arriba hasta encontrar una pieza con getTipo
-      while (objeto && !(objeto instanceof THREE.Object3D && 'getTipo' in objeto)) {
-        objeto = objeto.parent;
-      }
-
-      if (objeto && 'getTipo' in objeto) {
-        // Si seleccionas la misma pieza, la deseleccionas
-        if (this.piezaSeleccionada === objeto) {
-          this.piezaSeleccionada = null;
-          this.eliminarResaltados();  // Eliminar resaltado
-          console.log("Pieza deseleccionada");
-          return;
-        }
-
-        // Si seleccionas una nueva pieza, eliminar los resaltados de la pieza anterior
-        if (this.piezaSeleccionada) {
-          this.eliminarResaltados();
-        }
-
-        // Seleccionar nueva pieza
-        this.piezaSeleccionada = objeto;
-        console.log(`Seleccionada: ${objeto.getTipo()} ${objeto.getColor()} en (${objeto.getFila()}, ${objeto.getColumna()})`);
-
-        // Resaltar las casillas válidas de la pieza seleccionada
-        this.resaltarMovimientosValidos(objeto);
-        return;
-      }
-    }
-
-    if (this.piezaSeleccionada) {
-      const destino = this.getCasillaDesdeMouse(this.raycaster);
-      if (!destino) return;
-
-      const { fila, columna } = destino;
-
-      const validos = this.piezaSeleccionada.movimientosValidos(this.tablero);
-      const esMovimientoValido = validos.some(m => m.fila === fila && m.columna === columna);
-
-      // Verificar si la casilla de destino tiene una pieza del oponente
-      const piezaDestino = this.tablero[fila][columna];
-      const esCaptura = piezaDestino && piezaDestino.color !== this.piezaSeleccionada.color;
-
-      if (esMovimientoValido) {
-        const pieza = this.piezaSeleccionada;
-
-        // Si es captura, eliminamos la pieza del oponente
-        if (esCaptura) {
-          this.eliminarPieza(piezaDestino);
-        }
-
-        // Actualizamos el tablero
-        this.tablero[pieza.getFila()][pieza.getColumna()] = null;
-        this.tablero[fila][columna] = pieza;
-
-        // Movemos la pieza a la nueva casilla
-        pieza.moverA(fila, columna);
-        this.piezaSeleccionada = null;
-
-        console.log(`Pieza movida a (${fila}, ${columna})`);
-
-        // Eliminar resaltados después de mover la pieza
-        this.eliminarResaltados();
-      } else {
-        console.log("Movimiento inválido para esa pieza");
-      }
-    }
-  }
-
-  // Método para eliminar una pieza (captura)
-  eliminarPieza(pieza) {
-    const index = this.piezas.indexOf(pieza);
-    if (index !== -1) {
-      this.piezas.splice(index, 1); // Eliminar de la lista de piezas
-      this.remove(pieza); // Eliminar de la escena
-      console.log(`${pieza.getTipo()} ${pieza.getColor()} capturada`);
-    }
-  }
-
-  resaltarMovimientosValidos(pieza) {
-    // Primero, eliminamos cualquier casilla resaltada previamente
-    this.eliminarResaltados();
-
-    // Obtener los movimientos válidos de la pieza seleccionada
-    const validos = pieza.movimientosValidos(this.tablero);
-
-    // Resaltar las casillas válidas
-    const size = 1.4;
-    const verde = new THREE.MeshStandardMaterial({ color: 'green' });
-
-    validos.forEach(movimiento => {
-      const casilla = new THREE.Mesh(new THREE.BoxGeometry(size, 0.2, size), verde); // Grosor 0.2 para no sobreponerse con las piezas
-      const offset = (8 * size) / 2;
-
-      casilla.position.set(
-        movimiento.columna * size - offset + size / 2,
-        0.2,  // Elevada para que no se tape con las piezas
-        movimiento.fila * size - offset + size / 2
-      );
-
-      this.add(casilla);
-      this.resaltados.push(casilla);  // Guardar referencia a las casillas resaltadas
-    });
-  }
-
-  eliminarResaltados() {
-    // Eliminar las casillas resaltadas previas
-    if (this.resaltados.length > 0) {
-      this.resaltados.forEach(casilla => {
-        this.remove(casilla);
-      });
-      this.resaltados = [];  // Vaciar el array de casillas resaltadas
-    }
-  }
-
-  getCasillaDesdeMouse(raycaster) {
-    const plano = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-    const intersect = new THREE.Vector3();
-    raycaster.ray.intersectPlane(plano, intersect);
-
-    const size = 1.4;
-    const offset = (8 * size) / 2;
-
-    const x = intersect.x + offset;
-    const z = intersect.z + offset;
-
-    const columna = Math.floor(x / size);
-    const fila = Math.floor(z / size);
-
-    if (fila >= 0 && fila < 8 && columna >= 0 && columna < 8) {
-      return { fila, columna };
-    }
-
-    return null;
-  }
-
-
 
   crearTablero() {
     for (let fila = 0; fila < 8; fila++) {
@@ -252,7 +97,7 @@ class Tablero extends THREE.Object3D {
       this.peonNegro0, this.peonNegro1, this.peonNegro2, this.peonNegro3,
       this.peonNegro4, this.peonNegro5, this.peonNegro6, this.peonNegro7
     ];
-
+    
 
     piezas.forEach(pieza => {
       this.tablero[pieza.fila][pieza.columna] = pieza;
@@ -269,7 +114,7 @@ class Tablero extends THREE.Object3D {
     }
   }
 
-
+  
   createFigura() {
     const size = 1.4;
     const geometry = new THREE.BoxGeometry(size, 0.4, size);
@@ -291,9 +136,6 @@ class Tablero extends THREE.Object3D {
       }
     }
   }
-
-
-
 
   createGUI(gui, titleGui) {
     this.guiControls = {

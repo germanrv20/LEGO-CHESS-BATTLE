@@ -11,64 +11,6 @@ class Torre extends Pieza {
    
   }
 
-
-  movimientosValidos(tablero) {
-    const movimientos = [];
-    const fila = this.fila;
-    const columna = this.columna;
-  
-    // Movimiento hacia arriba (arriba de la torre)
-    for (let i = fila - 1; i >= 0; i--) {
-      if (tablero[i][columna] === null) {
-        movimientos.push({ fila: i, columna });
-      } else {
-        if (tablero[i][columna].color !== this.color) {
-          movimientos.push({ fila: i, columna });
-        }
-        break; // Si hay una pieza, no puedes seguir moviéndote en esta dirección
-      }
-    }
-  
-    // Movimiento hacia abajo (abajo de la torre)
-    for (let i = fila + 1; i < 8; i++) {
-      if (tablero[i][columna] === null) {
-        movimientos.push({ fila: i, columna });
-      } else {
-        if (tablero[i][columna].color !== this.color) {
-          movimientos.push({ fila: i, columna });
-        }
-        break; // Si hay una pieza, no puedes seguir moviéndote en esta dirección
-      }
-    }
-  
-    // Movimiento hacia la izquierda (izquierda de la torre)
-    for (let j = columna - 1; j >= 0; j--) {
-      if (tablero[fila][j] === null) {
-        movimientos.push({ fila, columna: j });
-      } else {
-        if (tablero[fila][j].color !== this.color) {
-          movimientos.push({ fila, columna: j });
-        }
-        break; // Si hay una pieza, no puedes seguir moviéndote en esta dirección
-      }
-    }
-  
-    // Movimiento hacia la derecha (derecha de la torre)
-    for (let j = columna + 1; j < 8; j++) {
-      if (tablero[fila][j] === null) {
-        movimientos.push({ fila, columna: j });
-      } else {
-        if (tablero[fila][j].color !== this.color) {
-          movimientos.push({ fila, columna: j });
-        }
-        break; // Si hay una pieza, no puedes seguir moviéndote en esta dirección
-      }
-    }
-  
-    return movimientos;
-  }
-  
-
   createFigura() {
     
    
@@ -216,8 +158,6 @@ class Torre extends Pieza {
     
 
   }
-
- 
 
 
   createBotón() {
