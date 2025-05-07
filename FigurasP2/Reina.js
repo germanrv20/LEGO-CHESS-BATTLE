@@ -12,38 +12,6 @@ class Reina extends Pieza {
 
   }
 
-
-  movimientosValidos(tablero) {
-    const movimientos = [];
-    const direcciones = [
-      [1, 0], [-1, 0], [0, 1], [0, -1], // Torre
-      [1, 1], [-1, -1], [1, -1], [-1, 1] // Alfil
-    ];
-    const fila = this.fila;
-    const columna = this.columna;
-  
-    for (const [df, dc] of direcciones) {
-      let f = fila + df;
-      let c = columna + dc;
-      while (f >= 0 && f < 8 && c >= 0 && c < 8) {
-        const pieza = tablero[f][c];
-        if (pieza === null) {
-          movimientos.push({ fila: f, columna: c });
-        } else {
-          if (pieza.color !== this.color) {
-            movimientos.push({ fila: f, columna: c }); // capturar
-          }
-          break; // no puede saltar piezas
-        }
-        f += df;
-        c += dc;
-      }
-    }
-  
-    return movimientos;
-  }
-  
-
   createFigura() {
 
     // Material para los objetos 3D
