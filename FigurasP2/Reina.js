@@ -49,12 +49,73 @@ class Reina extends Pieza {
             }
           });
 
-          obj.scale.set(0.6, 0.6, 0.6);
-          obj.rotateY(Math.PI / 2);
-          if (this.color === "negro") {
+         
+          //obj.rotateY(Math.PI / 2);
+          
+          /*if (this.color === "negro") {
             obj.rotateY(Math.PI);
+          }*/
+
+          //obj.position.set(0, 0.2, -2);
+
+          let escalado = 0.6;
+
+          obj.scale.set(escalado, escalado, escalado);
+          
+          if (nombre === 'brazo_der.obj') {
+            if (this.color === "negro") {
+              obj.rotateY(-Math.PI/2);
+              obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
+            };
+            if (this.color === "blanco") {
+              obj.rotateY(-Math.PI);
+              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+            }
           }
-          obj.position.set(0, 0.2, -2);
+
+          if (nombre === 'brazo_izq.obj') {
+            if (this.color === "negro") {
+              obj.rotateY(-Math.PI/2);
+              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+            };
+            if (this.color === "blanco") {
+              obj.rotateY(Math.PI/2);
+              obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
+            }
+          }
+
+          if (nombre === 'pierna_der.obj') {
+            if (this.color === "negro") {
+              obj.rotateY(Math.PI);
+            };
+            obj.rotateY(Math.PI/2);
+            obj.position.set(-0.366867*escalado, 1.44905*escalado, -2);
+          }
+
+          if (nombre === 'pierna_izq.obj') {
+            if (this.color === "negro") {
+              obj.rotateY(Math.PI);
+            };
+            obj.rotateY(Math.PI/2);
+            obj.position.set(0.357668*escalado, 1.45441*escalado, -2);
+          }
+
+          if (nombre === 'cabeza.obj') {
+            if (this.color === "negro") {
+              obj.rotateY(Math.PI);
+            };
+            obj.rotateY(Math.PI/2);
+            obj.position.set(0, 3.17551*escalado, -2);
+          }
+
+          if (nombre === 'cuerpo.obj') {
+            if (this.color === "negro") {
+              obj.rotateY(Math.PI);
+            };
+            obj.rotateY(Math.PI/2);
+            obj.position.set(0, 1.91479*escalado, -2);
+          }
+
 
           this.add(obj);
         }
