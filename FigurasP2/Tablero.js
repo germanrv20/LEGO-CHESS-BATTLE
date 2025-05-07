@@ -84,12 +84,23 @@ class Tablero extends THREE.Object3D {
       const validos = this.piezaSeleccionada.movimientosValidos(this.tablero);
       const esMovimientoValido = validos.some(m => m.fila === fila && m.columna === columna);
 
+      // Verificar si la casilla de destino tiene una pieza del oponente
+      const piezaDestino = this.tablero[fila][columna];
+      const esCaptura = piezaDestino && piezaDestino.color !== this.piezaSeleccionada.color;
+
       if (esMovimientoValido) {
         const pieza = this.piezaSeleccionada;
 
+        // Si es captura, eliminamos la pieza del oponente
+        if (esCaptura) {
+          this.eliminarPieza(piezaDestino);
+        }
+
+        // Actualizamos el tablero
         this.tablero[pieza.getFila()][pieza.getColumna()] = null;
         this.tablero[fila][columna] = pieza;
 
+        // Movemos la pieza a la nueva casilla
         pieza.moverA(fila, columna);
         this.piezaSeleccionada = null;
 
@@ -100,6 +111,16 @@ class Tablero extends THREE.Object3D {
       } else {
         console.log("Movimiento inválido para esa pieza");
       }
+    }
+  }
+
+  // Método para eliminar una pieza (captura)
+  eliminarPieza(pieza) {
+    const index = this.piezas.indexOf(pieza);
+    if (index !== -1) {
+      this.piezas.splice(index, 1); // Eliminar de la lista de piezas
+      this.remove(pieza); // Eliminar de la escena
+      console.log(`${pieza.getTipo()} ${pieza.getColor()} capturada`);
     }
   }
 
@@ -138,7 +159,6 @@ class Tablero extends THREE.Object3D {
       this.resaltados = [];  // Vaciar el array de casillas resaltadas
     }
   }
-  
 
   getCasillaDesdeMouse(raycaster) {
     const plano = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
