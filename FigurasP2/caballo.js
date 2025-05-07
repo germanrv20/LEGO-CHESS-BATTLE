@@ -13,6 +13,43 @@ class Caballo extends Pieza {
 
     }
 
+    movimientosValidos(tablero) {
+        const movimientos = [];
+        const fila = this.fila;
+        const columna = this.columna;
+      
+        // Movimientos posibles del caballo: 8 direcciones en forma de "L"
+        const direcciones = [
+          [-2, -1], // Arriba-izquierda
+          [-2, 1],  // Arriba-derecha
+          [2, -1],  // Abajo-izquierda
+          [2, 1],   // Abajo-derecha
+          [-1, -2], // Izquierda-arriba
+          [-1, 2],  // Izquierda-abajo
+          [1, -2],  // Derecha-arriba
+          [1, 2]    // Derecha-abajo
+        ];
+      
+        // Comprobar todas las direcciones
+        for (const [dFila, dColumna] of direcciones) {
+          const nuevaFila = fila + dFila;
+          const nuevaColumna = columna + dColumna;
+      
+          // Verificar si la nueva posición está dentro del tablero
+          if (nuevaFila >= 0 && nuevaFila < 8 && nuevaColumna >= 0 && nuevaColumna < 8) {
+            const pieza = tablero[nuevaFila][nuevaColumna];
+      
+            // El caballo puede moverse a una casilla vacía o capturar una pieza del color contrario
+            if (pieza === null || pieza.color !== this.color) {
+              movimientos.push({ fila: nuevaFila, columna: nuevaColumna });
+            }
+          }
+        }
+      
+        return movimientos;
+      }
+      
+
 
     createFigura() {
 
