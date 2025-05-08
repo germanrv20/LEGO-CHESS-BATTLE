@@ -12,7 +12,6 @@ class Reina extends Pieza {
 
   }
 
-
   movimientosValidos(tablero) {
     const movimientos = [];
     const direcciones = [
@@ -35,14 +34,16 @@ class Reina extends Pieza {
           }
           break; // no puede saltar piezas
         }
+
         f += df;
         c += dc;
+
       }
     }
   
     return movimientos;
+
   }
-  
 
   createFigura() {
 
@@ -58,9 +59,8 @@ class Reina extends Pieza {
 
     this.material = new THREE.MeshStandardMaterial({ color: colorpieza });
 
-
     const loader = new OBJLoader();
-
+    
     const piezas = [
       'cabeza.obj',
       'cuerpo.obj',
@@ -75,15 +75,12 @@ class Reina extends Pieza {
         `./Piezas_reina/${nombre}`,
         (obj) => {
 
-          console.log(`✅ ${nombre} cargado correctamente`);
-
           obj.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               child.material = this.material;
             }
           });
 
-         
           //obj.rotateY(Math.PI / 2);
           
           /*if (this.color === "negro") {
@@ -98,24 +95,20 @@ class Reina extends Pieza {
           
           if (nombre === 'brazo_der.obj') {
             if (this.color === "negro") {
-              obj.rotateY(-Math.PI/2);
+              obj.rotateY(Math.PI);
               obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
             };
-            if (this.color === "blanco") {
-              obj.rotateY(-Math.PI);
-              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
-            }
+            obj.rotateY(Math.PI/2);
+            obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
           }
 
           if (nombre === 'brazo_izq.obj') {
             if (this.color === "negro") {
-              obj.rotateY(-Math.PI/2);
-              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+              obj.rotateY(Math.PI);
             };
-            if (this.color === "blanco") {
-              obj.rotateY(Math.PI/2);
-              obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
-            }
+            obj.rotateY(Math.PI/2);
+            obj.rotateZ(Math.PI/2);
+            obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
           }
 
           if (nombre === 'pierna_der.obj') {
@@ -149,7 +142,6 @@ class Reina extends Pieza {
             obj.rotateY(Math.PI/2);
             obj.position.set(0, 1.91479*escalado, -2);
           }
-
 
           this.add(obj);
         }

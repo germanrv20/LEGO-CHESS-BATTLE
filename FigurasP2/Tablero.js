@@ -17,23 +17,21 @@ class Tablero extends THREE.Object3D {
     });
 
     this.tablero = [];
-    this.piezas = []; // opcional si quieres mantener una lista
-    this.resaltados = []; // Array para almacenar las casillas resaltadas
+    this.piezas = [];
+    this.resaltados = [];
 
     this.crearTablero();
     this.colocarPiezasIniciales();
     this.createFigura();
     this.createGUI(gui, titleGui);
 
-
     this.piezaSeleccionada = null;
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
-
-    // Ejemplo de movimiento
-    // this.moverPieza(this.reyBlanco, 4, 4);
+    this.turnoActual = 'blanco'; // ← Añadido: Control del turno
   }
+
   handleClick(event, camera, domElement) {
     const rect = domElement.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -46,30 +44,30 @@ class Tablero extends THREE.Object3D {
     if (intersects.length > 0) {
       let objeto = intersects[0].object;
 
-      // Buscar hacia arriba hasta encontrar una pieza con getTipo
       while (objeto && !(objeto instanceof THREE.Object3D && 'getTipo' in objeto)) {
         objeto = objeto.parent;
       }
 
       if (objeto && 'getTipo' in objeto) {
-        // Si seleccionas la misma pieza, la deseleccionas
+        // ← Añadido: Verificar que la pieza sea del color correspondiente al turno
+        if (objeto.getColor() !== this.turnoActual) {
+          console.log(`No es el turno de las piezas ${objeto.getColor()}`);
+          return;
+        }
+
         if (this.piezaSeleccionada === objeto) {
           this.piezaSeleccionada = null;
-          this.eliminarResaltados();  // Eliminar resaltado
+          this.eliminarResaltados();
           console.log("Pieza deseleccionada");
           return;
         }
 
-        // Si seleccionas una nueva pieza, eliminar los resaltados de la pieza anterior
         if (this.piezaSeleccionada) {
           this.eliminarResaltados();
         }
 
-        // Seleccionar nueva pieza
         this.piezaSeleccionada = objeto;
         console.log(`Seleccionada: ${objeto.getTipo()} ${objeto.getColor()} en (${objeto.getFila()}, ${objeto.getColumna()})`);
-
-        // Resaltar las casillas válidas de la pieza seleccionada
         this.resaltarMovimientosValidos(objeto);
         return;
       }
@@ -80,83 +78,68 @@ class Tablero extends THREE.Object3D {
       if (!destino) return;
 
       const { fila, columna } = destino;
-
       const validos = this.piezaSeleccionada.movimientosValidos(this.tablero);
       const esMovimientoValido = validos.some(m => m.fila === fila && m.columna === columna);
-
-      // Verificar si la casilla de destino tiene una pieza del oponente
       const piezaDestino = this.tablero[fila][columna];
       const esCaptura = piezaDestino && piezaDestino.color !== this.piezaSeleccionada.color;
 
       if (esMovimientoValido) {
         const pieza = this.piezaSeleccionada;
 
-        // Si es captura, eliminamos la pieza del oponente
         if (esCaptura) {
           this.eliminarPieza(piezaDestino);
         }
 
-        // Actualizamos el tablero
         this.tablero[pieza.getFila()][pieza.getColumna()] = null;
         this.tablero[fila][columna] = pieza;
-
-        // Movemos la pieza a la nueva casilla
         pieza.moverA(fila, columna);
         this.piezaSeleccionada = null;
-
-        console.log(`Pieza movida a (${fila}, ${columna})`);
-
-        // Eliminar resaltados después de mover la pieza
         this.eliminarResaltados();
+
+        // ← Añadido: Cambiar turno después de mover
+        this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
+        console.log(`Turno cambiado. Ahora juega: ${this.turnoActual}`);
       } else {
         console.log("Movimiento inválido para esa pieza");
       }
     }
   }
 
-  // Método para eliminar una pieza (captura)
   eliminarPieza(pieza) {
     const index = this.piezas.indexOf(pieza);
     if (index !== -1) {
-      this.piezas.splice(index, 1); // Eliminar de la lista de piezas
-      this.remove(pieza); // Eliminar de la escena
+      this.piezas.splice(index, 1);
+      this.remove(pieza);
       console.log(`${pieza.getTipo()} ${pieza.getColor()} capturada`);
     }
   }
 
   resaltarMovimientosValidos(pieza) {
-    // Primero, eliminamos cualquier casilla resaltada previamente
     this.eliminarResaltados();
-
-    // Obtener los movimientos válidos de la pieza seleccionada
     const validos = pieza.movimientosValidos(this.tablero);
 
-    // Resaltar las casillas válidas
     const size = 1.4;
     const verde = new THREE.MeshStandardMaterial({ color: 'green' });
 
     validos.forEach(movimiento => {
-      const casilla = new THREE.Mesh(new THREE.BoxGeometry(size, 0.2, size), verde); // Grosor 0.2 para no sobreponerse con las piezas
+      const casilla = new THREE.Mesh(new THREE.BoxGeometry(size, 0.2, size), verde);
       const offset = (8 * size) / 2;
-
       casilla.position.set(
         movimiento.columna * size - offset + size / 2,
-        0.2,  // Elevada para que no se tape con las piezas
+        0.2,
         movimiento.fila * size - offset + size / 2
       );
-
       this.add(casilla);
-      this.resaltados.push(casilla);  // Guardar referencia a las casillas resaltadas
+      this.resaltados.push(casilla);
     });
   }
 
   eliminarResaltados() {
-    // Eliminar las casillas resaltadas previas
     if (this.resaltados.length > 0) {
       this.resaltados.forEach(casilla => {
         this.remove(casilla);
       });
-      this.resaltados = [];  // Vaciar el array de casillas resaltadas
+      this.resaltados = [];
     }
   }
 
@@ -181,8 +164,6 @@ class Tablero extends THREE.Object3D {
     return null;
   }
 
-
-
   crearTablero() {
     for (let fila = 0; fila < 8; fila++) {
       this.tablero[fila] = Array(8).fill(null);
@@ -190,74 +171,26 @@ class Tablero extends THREE.Object3D {
   }
 
   colocarPiezasIniciales() {
-    // Reyes
-    this.reyBlanco = new Rey('blanco', 7, 4, 0);
-    this.reyNegro = new Rey('negro', 0, 4, 1);
-
-    // Reinas
-    this.reinaBlanca = new Reina('blanco', 7, 3, 2);
-    this.reinaNegra = new Reina('negro', 0, 3, 3);
-
-    // Torres
-    this.torreBlanca1 = new Torre('blanco', 7, 0, 4);
-    this.torreBlanca2 = new Torre('blanco', 7, 7, 5);
-    this.torreNegra1 = new Torre('negro', 0, 0, 6);
-    this.torreNegra2 = new Torre('negro', 0, 7, 7);
-
-    // Alfiles
-    this.alfilBlanco1 = new Alfil('blanco', 7, 2, 8);
-    this.alfilBlanco2 = new Alfil('blanco', 7, 5, 9);
-    this.alfilNegro1 = new Alfil('negro', 0, 2, 10);
-    this.alfilNegro2 = new Alfil('negro', 0, 5, 11);
-
-    // Caballos
-    this.caballoBlanco1 = new Caballo('blanco', 7, 1, 12);
-    this.caballoBlanco2 = new Caballo('blanco', 7, 6, 13);
-    this.caballoNegro1 = new Caballo('negro', 0, 1, 14);
-    this.caballoNegro2 = new Caballo('negro', 0, 6, 15);
-
-    // Peones blancos
-    this.peonBlanco0 = new Peon('blanco', 6, 0, 16);
-    this.peonBlanco1 = new Peon('blanco', 6, 1, 17);
-    this.peonBlanco2 = new Peon('blanco', 6, 2, 18);
-    this.peonBlanco3 = new Peon('blanco', 6, 3, 19);
-    this.peonBlanco4 = new Peon('blanco', 6, 4, 20);
-    this.peonBlanco5 = new Peon('blanco', 6, 5, 21);
-    this.peonBlanco6 = new Peon('blanco', 6, 6, 22);
-    this.peonBlanco7 = new Peon('blanco', 6, 7, 23);
-
-    // Peones negros
-    this.peonNegro0 = new Peon('negro', 1, 0, 24);
-    this.peonNegro1 = new Peon('negro', 1, 1, 25);
-    this.peonNegro2 = new Peon('negro', 1, 2, 26);
-    this.peonNegro3 = new Peon('negro', 1, 3, 27);
-    this.peonNegro4 = new Peon('negro', 1, 4, 28);
-    this.peonNegro5 = new Peon('negro', 1, 5, 29);
-    this.peonNegro6 = new Peon('negro', 1, 6, 30);
-    this.peonNegro7 = new Peon('negro', 1, 7, 31);
-
-
-    // Agrupar todas para facilitar render
     const piezas = [
-      this.reyBlanco, this.reyNegro,
-      this.reinaBlanca, this.reinaNegra,
-      this.torreBlanca1, this.torreBlanca2,
-      this.torreNegra1, this.torreNegra2,
-      this.alfilBlanco1, this.alfilBlanco2,
-      this.alfilNegro1, this.alfilNegro2,
-      this.caballoBlanco1, this.caballoBlanco2,
-      this.caballoNegro1, this.caballoNegro2,
-      this.peonBlanco0, this.peonBlanco1, this.peonBlanco2, this.peonBlanco3,
-      this.peonBlanco4, this.peonBlanco5, this.peonBlanco6, this.peonBlanco7,
-      this.peonNegro0, this.peonNegro1, this.peonNegro2, this.peonNegro3,
-      this.peonNegro4, this.peonNegro5, this.peonNegro6, this.peonNegro7
+      new Rey('blanco', 7, 4, 0), new Rey('negro', 0, 4, 1),
+      new Reina('blanco', 7, 3, 2), new Reina('negro', 0, 3, 3),
+      new Torre('blanco', 7, 0, 4), new Torre('blanco', 7, 7, 5),
+      new Torre('negro', 0, 0, 6), new Torre('negro', 0, 7, 7),
+      new Alfil('blanco', 7, 2, 8), new Alfil('blanco', 7, 5, 9),
+      new Alfil('negro', 0, 2, 10), new Alfil('negro', 0, 5, 11),
+      new Caballo('blanco', 7, 1, 12), new Caballo('blanco', 7, 6, 13),
+      new Caballo('negro', 0, 1, 14), new Caballo('negro', 0, 6, 15),
     ];
 
+    for (let i = 0; i < 8; i++) {
+      piezas.push(new Peon('blanco', 6, i, 16 + i));
+      piezas.push(new Peon('negro', 1, i, 24 + i));
+    }
 
-    piezas.forEach(pieza => {
-      this.tablero[pieza.fila][pieza.columna] = pieza;
-      this.add(pieza);
-      this.piezas.push(pieza); // opcional
+    piezas.forEach(p => {
+      this.tablero[p.fila][p.columna] = p;
+      this.add(p);
+      this.piezas.push(p);
     });
   }
 
@@ -268,7 +201,6 @@ class Tablero extends THREE.Object3D {
       this.tablero[nuevaFila][nuevaColumna] = pieza;
     }
   }
-
 
   createFigura() {
     const size = 1.4;
@@ -292,9 +224,6 @@ class Tablero extends THREE.Object3D {
     }
   }
 
-
-
-
   createGUI(gui, titleGui) {
     this.guiControls = {
       resolucion: 10,
@@ -302,7 +231,7 @@ class Tablero extends THREE.Object3D {
   }
 
   update() {
-    // Por si necesitas animaciones o lógica por frame
+    // lógica por frame (si se necesita)
   }
 }
 
