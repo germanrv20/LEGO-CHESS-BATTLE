@@ -70,9 +70,6 @@ class MyScene extends THREE.Scene {
     this.add (this.model6);
    
   }
-
-
-  
   
   initStats() {
   
@@ -98,7 +95,7 @@ class MyScene extends THREE.Scene {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 50);
     // Recuerda: Todas las unidades están en metros
     // También se indica dónde se coloca
-    this.camera.position.set (4, 2, 4);
+    this.camera.position.set (0, 14, 14);
     // Y hacia dónde mira
     var look = new THREE.Vector3 (0,0,0);
     this.camera.lookAt(look);

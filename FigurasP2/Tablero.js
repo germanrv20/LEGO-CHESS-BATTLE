@@ -30,9 +30,17 @@ class Tablero extends THREE.Object3D {
     this.mouse = new THREE.Vector2();
 
     this.turnoActual = 'blanco'; // ← Añadido: Control del turno
+    this.partidaTerminada = false; // ← Añadido
+    this.posCamaraBlanco = { position: new THREE.Vector3(0, 14, -14), lookAt: new THREE.Vector3(0, 0, 0) };
+    this.posCamaraNegro = { position: new THREE.Vector3(0, 14, 14), lookAt: new THREE.Vector3(0, 0, 0) };
+
+
   }
 
   handleClick(event, camera, domElement) {
+    
+    if (this.partidaTerminada) return; // ← Añadido
+    
     const rect = domElement.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -99,20 +107,41 @@ class Tablero extends THREE.Object3D {
         // ← Añadido: Cambiar turno después de mover
         this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
         console.log(`Turno cambiado. Ahora juega: ${this.turnoActual}`);
+
+        // Al final del if (esMovimientoValido)
+        this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
+        this.cambiarCamara(camera);  // ← Aquí llamamos a mover la cámara
+        
       } else {
         console.log("Movimiento inválido para esa pieza");
       }
     }
   }
 
+  cambiarCamara(camera) {
+    const objetivo = this.turno === 'blanco' ? this.posCamaraBlanco : this.posCamaraNegro;
+    
+    camera.position.copy(objetivo.position);
+    camera.lookAt(objetivo.lookAt);
+  }
+
+  
   eliminarPieza(pieza) {
     const index = this.piezas.indexOf(pieza);
     if (index !== -1) {
       this.piezas.splice(index, 1);
       this.remove(pieza);
       console.log(`${pieza.getTipo()} ${pieza.getColor()} capturada`);
+  
+      if (pieza.getTipo().toLowerCase() === 'rey') {
+        this.partidaTerminada = true;
+        const ganador = pieza.getColor() === 'blanco' ? 'Negro' : 'Blanco';
+        alert(`¡El Rey ${pieza.getColor()} ha sido capturado! ${ganador} gana la partida.`);
+        console.log(`Partida terminada. Ganador: ${ganador}`);
+      }
     }
   }
+  
 
   resaltarMovimientosValidos(pieza) {
     this.eliminarResaltados();

@@ -98,17 +98,22 @@ class Reina extends Pieza {
               obj.rotateY(Math.PI);
               obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
             };
+            if (this.color === "blanco") { 
+              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+            };
             obj.rotateY(Math.PI/2);
-            obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
           }
 
           if (nombre === 'brazo_izq.obj') {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
+              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+            }
+            if (this.color === "blanco") {
+              obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
             };
             obj.rotateY(Math.PI/2);
             obj.rotateZ(Math.PI/2);
-            obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
           }
 
           if (nombre === 'pierna_der.obj') {
