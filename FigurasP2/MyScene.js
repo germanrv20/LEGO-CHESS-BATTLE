@@ -5,6 +5,7 @@ import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
 import  Stats from '../libs/stats.module.js'
+import * as TWEEN from '../libs/tween.module.js';
 
 // Clases de mi proyecto
 
@@ -230,6 +231,11 @@ class MyScene extends THREE.Scene {
     // Se actualiza el resto del modelo
     //this.model.update();
     
+    try {
+      TWEEN.update();
+    } catch (e) {
+      console.error("Error al hacer TWEEN.update()", e);
+    }
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());
 

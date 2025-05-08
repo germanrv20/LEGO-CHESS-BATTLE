@@ -1,4 +1,7 @@
 import * as THREE from '../libs/three.module.js';
+import { OBJLoader } from '../libs/OBJLoader.js';
+import * as TWEEN from '../libs/tween.module.js';
+
 
 import { Rey } from './Rey.js';
 import { Torre } from './Torre.js';
@@ -25,6 +28,44 @@ class Tablero extends THREE.Object3D {
     this.createFigura();
     this.createGUI(gui, titleGui);
 
+
+    //LUZ TABLero
+    // Añadir una luz adicional para el tablero blanco
+    this.luzTableroBlanco = new THREE.SpotLight(0xffffff, 1.5); // Luz blanca de intensidad 1.5
+    this.luzTableroBlanco.angle = Math.PI / 4; // Ángulo de la luz
+    this.luzTableroBlanco.penumbra = 0.2; // Suavizar bordes de la luz
+    this.luzTableroBlanco.castShadow = true; // Habilitar sombras
+    this.luzTableroBlanco.visible = true; // Hacer la luz visible
+
+    // Colocar la luz en una posición que apunte al tablero blanco
+    this.luzTableroBlanco.position.set(0, 10, 10); // Ajusta las coordenadas de la luz
+
+    // Establecer un punto de referencia donde están las piezas negras (por ejemplo, en el centro de la zona de piezas negras)
+    const puntoDeDestino = new THREE.Vector3(0, 0, 0); // Este es el centro del tablero en la zona de las piezas negras (filas 0 y 1)
+
+    // Puedes hacer que el target de la luz apunte a esta zona
+    this.luzTableroBlanco.target.position.copy(puntoDeDestino);
+
+    // Agregar la luz al tablero
+    this.add(this.luzTableroBlanco);
+
+
+    
+
+
+    // LUZ - Inicializar luz roja
+    this.luzTarget = new THREE.Object3D();
+    this.add(this.luzTarget); // ¡Esto es fundamental!
+
+    // Crear la luz roja con mayor intensidad
+    this.luzSeleccion = new THREE.SpotLight(0xff0000, 100); // Color rojo y mayor intensidad
+    this.luzSeleccion.angle = Math.PI / 4;
+    this.luzSeleccion.penumbra = 0.3;
+    this.luzSeleccion.castShadow = true;
+    this.luzSeleccion.visible = false; // Inicialmente no visible
+    this.luzSeleccion.target = this.luzTarget;
+    this.add(this.luzSeleccion);
+
     this.piezaSeleccionada = null;
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -34,53 +75,81 @@ class Tablero extends THREE.Object3D {
     this.posCamaraBlanco = { position: new THREE.Vector3(0, 14, -14), lookAt: new THREE.Vector3(0, 0, 0) };
     this.posCamaraNegro = { position: new THREE.Vector3(0, 14, 14), lookAt: new THREE.Vector3(0, 0, 0) };
 
-
   }
 
+  apuntarLuzAPieza(pieza) {
+    if (pieza) {
+      this.luzTarget.position.copy(pieza.position); // Actualizamos el target real
+      this.luzSeleccion.position.set(
+        pieza.position.x,
+        pieza.position.y + 3,  // Ajusta la altura si es necesario
+        pieza.position.z - 3.5
+      );
+      this.luzSeleccion.visible = true; // Hacemos visible la luz
+    } else {
+      this.luzSeleccion.visible = false; // Si no hay pieza, apagamos la luz
+    }
+  }
+
+
+
   handleClick(event, camera, domElement) {
-    
-    if (this.partidaTerminada) return; // ← Añadido
-    
+    if (this.partidaTerminada) return;
+
     const rect = domElement.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     this.raycaster.setFromCamera(this.mouse, camera);
-
     const intersects = this.raycaster.intersectObjects(this.children, true);
 
     if (intersects.length > 0) {
       let objeto = intersects[0].object;
 
+      // Buscar objeto con método getTipo (una pieza)
       while (objeto && !(objeto instanceof THREE.Object3D && 'getTipo' in objeto)) {
         objeto = objeto.parent;
       }
 
       if (objeto && 'getTipo' in objeto) {
-        // ← Añadido: Verificar que la pieza sea del color correspondiente al turno
+        // Verificar turno correcto
         if (objeto.getColor() !== this.turnoActual) {
           console.log(`No es el turno de las piezas ${objeto.getColor()}`);
           return;
         }
 
+        // Deselección si clic en la misma pieza
         if (this.piezaSeleccionada === objeto) {
           this.piezaSeleccionada = null;
           this.eliminarResaltados();
+          this.apuntarLuzAPieza(null); // ← Apagar luz
           console.log("Pieza deseleccionada");
           return;
         }
 
+        // Si había otra seleccionada, limpiar
         if (this.piezaSeleccionada) {
           this.eliminarResaltados();
         }
 
+        // Nueva selección
         this.piezaSeleccionada = objeto;
-        console.log(`Seleccionada: ${objeto.getTipo()} ${objeto.getColor()} en (${objeto.getFila()}, ${objeto.getColumna()})`);
+        this.apuntarLuzAPieza(objeto); // ← Encender luz
         this.resaltarMovimientosValidos(objeto);
+        console.log(`Seleccionada: ${objeto.getTipo()} ${objeto.getColor()} en (${objeto.getFila()}, ${objeto.getColumna()})`);
+
+        //if (objeto instanceof Reina) {
+        //  objeto.moverPiernaDer(Math.PI / 2);
+        //}
+
+       
+        
+        
         return;
       }
     }
 
+    // Si se hizo clic en el tablero para mover
     if (this.piezaSeleccionada) {
       const destino = this.getCasillaDesdeMouse(this.raycaster);
       if (!destino) return;
@@ -98,41 +167,49 @@ class Tablero extends THREE.Object3D {
           this.eliminarPieza(piezaDestino);
         }
 
+        // Mover pieza
         this.tablero[pieza.getFila()][pieza.getColumna()] = null;
         this.tablero[fila][columna] = pieza;
         pieza.moverA(fila, columna);
+
+        
+        // Limpiar selección
         this.piezaSeleccionada = null;
         this.eliminarResaltados();
+        this.apuntarLuzAPieza(null); // ← Apagar luz
 
-        // ← Añadido: Cambiar turno después de mover
+        // Cambiar turno
         this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
         console.log(`Turno cambiado. Ahora juega: ${this.turnoActual}`);
 
-        // Al final del if (esMovimientoValido)
         this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
-        this.cambiarCamara(camera);  // ← Aquí llamamos a mover la cámara
-        
+        this.apuntarLuzAPieza(null);  // apagar primero
+        this.cambiarCamara(camera);
+        this.apuntarLuzAPieza(this.piezaSeleccionada); // volver a apuntar si es necesario
+
+
       } else {
         console.log("Movimiento inválido para esa pieza");
       }
     }
   }
 
+
   cambiarCamara(camera) {
     const objetivo = this.turno === 'blanco' ? this.posCamaraBlanco : this.posCamaraNegro;
-    
     camera.position.copy(objetivo.position);
     camera.lookAt(objetivo.lookAt);
   }
 
-  
+
+
   eliminarPieza(pieza) {
     const index = this.piezas.indexOf(pieza);
     if (index !== -1) {
       this.piezas.splice(index, 1);
       this.remove(pieza);
       console.log(`${pieza.getTipo()} ${pieza.getColor()} capturada`);
-  
+
       if (pieza.getTipo().toLowerCase() === 'rey') {
         this.partidaTerminada = true;
         const ganador = pieza.getColor() === 'blanco' ? 'Negro' : 'Blanco';
@@ -141,7 +218,7 @@ class Tablero extends THREE.Object3D {
       }
     }
   }
-  
+
 
   resaltarMovimientosValidos(pieza) {
     this.eliminarResaltados();
@@ -260,8 +337,9 @@ class Tablero extends THREE.Object3D {
   }
 
   update() {
-    // lógica por frame (si se necesita)
+    // Si quisieras animar algo extra, lo harías aquí. La luz ya apunta correctamente.
   }
+
 }
 
 export { Tablero };
