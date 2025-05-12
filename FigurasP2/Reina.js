@@ -13,6 +13,7 @@ class Reina extends Pieza {
 
   }
 
+  
   moverA(fila, columna) {
     this.fila = fila;
     this.columna = columna;
@@ -27,6 +28,7 @@ class Reina extends Pieza {
   
     const direccionExtra = this.color === "blanco" ? 1 : -1;
   
+    
     // Animación de piernas
     const origenPiernas = { p: 0.0 };
     const destinoPiernas = { p: direccionExtra };
@@ -49,6 +51,8 @@ class Reina extends Pieza {
       .to(destino, 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
+      
+
   }
   
   

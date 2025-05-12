@@ -11,7 +11,7 @@ import { Caballo } from './caballo.js';
 import { Reina } from './Reina.js';
 
 class Tablero extends THREE.Object3D {
-  constructor(gui, titleGui) {
+  constructor(gui, titleGui, escenaPadre) {
     super();
 
     this.material = new THREE.MeshStandardMaterial({
@@ -72,8 +72,7 @@ class Tablero extends THREE.Object3D {
 
     this.turnoActual = 'blanco'; // ← Añadido: Control del turno
     this.partidaTerminada = false; // ← Añadido
-    this.posCamaraBlanco = { position: new THREE.Vector3(0, 14, -14), lookAt: new THREE.Vector3(0, 0, 0) };
-    this.posCamaraNegro = { position: new THREE.Vector3(0, 14, 14), lookAt: new THREE.Vector3(0, 0, 0) };
+    this.escenaPadre = escenaPadre;
 
   }
 
@@ -172,7 +171,7 @@ class Tablero extends THREE.Object3D {
         this.tablero[fila][columna] = pieza;
         pieza.moverA(fila, columna);
 
-        
+
         // Limpiar selección
         this.piezaSeleccionada = null;
         this.eliminarResaltados();
@@ -184,7 +183,7 @@ class Tablero extends THREE.Object3D {
 
         this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
         this.apuntarLuzAPieza(null);  // apagar primero
-        this.cambiarCamara(camera);
+        this.escenaPadre.transicionarCamara(this.turno);  // ← esto hace la animación suave
         this.apuntarLuzAPieza(this.piezaSeleccionada); // volver a apuntar si es necesario
 
 
@@ -192,13 +191,6 @@ class Tablero extends THREE.Object3D {
         console.log("Movimiento inválido para esa pieza");
       }
     }
-  }
-
-
-  cambiarCamara(camera) {
-    const objetivo = this.turno === 'blanco' ? this.posCamaraBlanco : this.posCamaraNegro;
-    camera.position.copy(objetivo.position);
-    camera.lookAt(objetivo.lookAt);
   }
 
 
@@ -239,6 +231,7 @@ class Tablero extends THREE.Object3D {
       this.resaltados.push(casilla);
     });
   }
+
 
   eliminarResaltados() {
     if (this.resaltados.length > 0) {

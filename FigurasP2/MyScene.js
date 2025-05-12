@@ -56,11 +56,12 @@ class MyScene extends THREE.Scene {
     this.model = new Torre("blanco", -1, 20, 20);
     this.model1 = new Lego(this.gui, "Controles del Lego");
     this.model2 = new Alfil("blanco", -1, 20,20);
-    this.model3 = new Tablero(this.gui, "Controles del Tablero");
+    this.model3 = new Tablero(this.gui, "Controles del Tablero", this);
     this.model3.position.set(0, 0, 0);
     this.model4 = new Rey("blanco", -1, 20,20); //la pone os lejos 
     this.model5 = new Peon("blanco", -1, 20,20);
     this.model6 = new Caballo("blanco", -1, 20,20);
+
     // Se añade el modelo a la escena
     this.add (this.model);
     this.add (this.model1);
@@ -111,6 +112,37 @@ class MyScene extends THREE.Scene {
     // Debe orbitar con respecto al punto de mira de la cámara
     this.cameraControl.target = look;
   }
+
+
+  transicionarCamara(turno) {
+    const duracion = 1500;
+    const centro = new THREE.Vector3(0, 0, 0); // punto alrededor del cual rotamos
+    const radio = 14; // distancia de la cámara al centro
+    const altura = 14;
+  
+    // Convertir posición actual a ángulo
+    let anguloActual = Math.atan2(this.camera.position.z, this.camera.position.x);
+    let anguloDestino = anguloActual + Math.PI; // rotar 180°
+  
+    // Objeto auxiliar para animar el ángulo
+    let obj = { theta: anguloActual };
+  
+    new TWEEN.Tween(obj)
+      .to({ theta: anguloDestino }, duracion)
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .onUpdate(() => {
+        // Calcular nueva posición usando ángulo
+        this.camera.position.x = radio * Math.cos(obj.theta);
+        this.camera.position.z = radio * Math.sin(obj.theta);
+        this.camera.position.y = altura;
+  
+        this.camera.lookAt(centro);
+        this.cameraControl.target.copy(centro);
+      })
+      .start();
+  }
+  
+  
   
   createGUI () {
     // Se crea la interfaz gráfica de usuario
