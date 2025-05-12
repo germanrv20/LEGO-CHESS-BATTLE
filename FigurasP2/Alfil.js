@@ -58,16 +58,21 @@ class Alfil extends Pieza {
 
   createFigura() {
 
-    // Material para los objetos 3D
-    let colorpieza;
-
-    if (this.color === "negro") {
-      colorpieza = 0x5c5c5c; // Negro
-    } else {
-      colorpieza = 0xffffff; // Blanco por defecto
-    }
-
-    const material = new THREE.MeshStandardMaterial({ color: colorpieza });
+        // Cargar texturas
+      const loaderT = new THREE.TextureLoader();
+      const texturaBlanca = loaderT.load('./texturas/wood.jpg');
+      const texturaNegra = loaderT.load('./texturas/ladrillo.jpeg');
+    
+      // Seleccionar textura según el color
+      let textura;
+      if (this.color === "blanco") {
+        textura = texturaBlanca;
+      } else {
+        textura = texturaNegra;
+      }
+    
+      // Crear material con textura
+      const material = new THREE.MeshStandardMaterial({ map: textura });
 
     //********************** BASE DE LA FIGURA ***************************
 

@@ -93,17 +93,20 @@ class Reina extends Pieza {
 
   createFigura() {
 
-    // Material para los objetos 3D
+     const loaderT = new THREE.TextureLoader();
+  const texturaBlanca = loaderT.load('./texturas/wood.jpg');
+  const texturaNegra = loaderT.load('./texturas/ladrillo.jpeg');
 
-    let colorpieza;
+  // Seleccionar textura según el color
+  let textura;
+  if (this.color === "blanco") {
+    textura = texturaBlanca;
+  } else {
+    textura = texturaNegra;
+  }
 
-    if (this.color === "negro") {
-      colorpieza = 0x5c5c5c;
-    } else {
-      colorpieza = 0xffffff;
-    }
-
-    this.material = new THREE.MeshStandardMaterial({ color: colorpieza });
+  // Crear material con textura
+   this.material = new THREE.MeshStandardMaterial({ map: textura })
 
     const loader = new OBJLoader();
     
