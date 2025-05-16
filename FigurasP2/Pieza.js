@@ -1,6 +1,6 @@
 import * as THREE from '../libs/three.module.js';
 import * as CSG from '../libs/three-bvh-csg.js';
-
+import * as TWEEN from '../libs/tween.module.js';
 
 
 class Pieza extends THREE.Object3D {
@@ -30,12 +30,38 @@ class Pieza extends THREE.Object3D {
   }
 
   moverA(fila, columna) {
+    const size = 1.4;
+    const offset = (8 * size) / 2 - size / 2;
+
+    const destinoX = columna * size - offset;
+    const destinoZ = fila * size - offset + 2;
+
+    const origenX = this.position.x;
+    const origenZ = this.position.z;
+
     this.fila = fila;
     this.columna = columna;
-    this.posicionarEnTablero(fila, columna);
 
-   
+    const alturaMax = 1;  // altura máxima del salto
 
+    const objetoAnimacion = { t: 0 };
+
+    new TWEEN.Tween(objetoAnimacion)
+      .to({ t: 1 }, 1000)
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .onUpdate(() => {
+        const t = objetoAnimacion.t;
+        // Interpolamos x, z linealmente
+        this.position.x = origenX + (destinoX - origenX) * t;
+        this.position.z = origenZ + (destinoZ - origenZ) * t;
+
+        // Altura y con forma parabólica: y = 4*h*t*(1-t)
+        this.position.y = 4 * alturaMax * t * (1 - t);
+      })
+      .onComplete(() => {
+        this.position.y = 0;  // asegurar que termina a nivel suelo
+      })
+      .start();
   }
 
   movimientosValidos(tablero) {
