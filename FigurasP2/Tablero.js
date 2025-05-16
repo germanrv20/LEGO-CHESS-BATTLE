@@ -50,7 +50,7 @@ class Tablero extends THREE.Object3D {
     this.add(this.luzTableroBlanco);
 
 
-    
+
 
 
     // LUZ - Inicializar luz roja
@@ -141,9 +141,9 @@ class Tablero extends THREE.Object3D {
         //  objeto.moverPiernaDer(Math.PI / 2);
         //}
 
-       
-        
-        
+
+
+
         return;
       }
     }
@@ -161,31 +161,40 @@ class Tablero extends THREE.Object3D {
 
       if (esMovimientoValido) {
         const pieza = this.piezaSeleccionada;
+        if (esCaptura && pieza instanceof Reina) {
+          // Captura animada con golpe
+          pieza.animacionGolpe(piezaDestino, () => {
+            this.eliminarPieza(piezaDestino);
 
-        if (esCaptura) {
-          this.eliminarPieza(piezaDestino);
+            // Mover la reina
+            this.tablero[pieza.getFila()][pieza.getColumna()] = null;
+            this.tablero[fila][columna] = pieza;
+            pieza.moverA(fila, columna);
+
+            // Limpiar selección
+            this.piezaSeleccionada = null;
+            this.eliminarResaltados();
+            this.apuntarLuzAPieza(null);
+
+            // Turno
+            this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
+            this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
+            this.escenaPadre.transicionarCamara(this.turno);
+          });
+        } else {
+          // Movimiento normal
+          this.tablero[pieza.getFila()][pieza.getColumna()] = null;
+          this.tablero[fila][columna] = pieza;
+          pieza.moverA(fila, columna);
+
+          this.piezaSeleccionada = null;
+          this.eliminarResaltados();
+          this.apuntarLuzAPieza(null);
+
+          this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
+          this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
+          this.escenaPadre.transicionarCamara(this.turno);
         }
-
-        // Mover pieza
-        this.tablero[pieza.getFila()][pieza.getColumna()] = null;
-        this.tablero[fila][columna] = pieza;
-        pieza.moverA(fila, columna);
-
-
-        // Limpiar selección
-        this.piezaSeleccionada = null;
-        this.eliminarResaltados();
-        this.apuntarLuzAPieza(null); // ← Apagar luz
-
-        // Cambiar turno
-        this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
-        console.log(`Turno cambiado. Ahora juega: ${this.turnoActual}`);
-
-        this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
-        this.apuntarLuzAPieza(null);  // apagar primero
-        this.escenaPadre.transicionarCamara(this.turno);  // ← esto hace la animación suave
-        this.apuntarLuzAPieza(this.piezaSeleccionada); // volver a apuntar si es necesario
-
 
       } else {
         console.log("Movimiento inválido para esa pieza");

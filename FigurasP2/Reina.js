@@ -9,26 +9,31 @@ class Reina extends Pieza {
 
     super("Reina", color, fila, columna, di);
     this.createFigura();
-    super.moverA(fila, columna);
+    this.moverA(fila, columna);
 
   }
-  /*
-  moverA(fila, columna) {
-    this.fila = fila;
-    this.columna = columna;
 
+  moverA(fila, columna) {
     const size = 1.4;
     const offset = (8 * size) / 2;
 
+    const distanciaFila = Math.abs(fila - this.fila);
+    const distanciaColumna = Math.abs(columna - this.columna);
+    const pasos = Math.max(distanciaFila, distanciaColumna);
+
+    this.fila = fila;
+    this.columna = columna;
+
+    const ajusteZ = this.color === 'blanco' ?  2 : 2;
+
     const destino = {
-      x: columna * size - offset,
-      z: fila * size - offset,
+      x: columna * size - offset + size / 2,
+      z: fila * size - offset + size / 2 + ajusteZ,
       y: 0
     };
 
     const direccionExtra = this.color === "blanco" ? 1 : -1;
 
-    // Animación de piernas
     const origenPiernas = { p: 0.0 };
     const destinoPiernas = { p: direccionExtra };
 
@@ -40,46 +45,64 @@ class Reina extends Pieza {
         this.piernaDer.rotation.z = 0;
         this.piernaIzq.rotation.z = 0;
       })
-      .repeat(1)
+      .repeat(pasos)
       .yoyo(true)
       .start();
 
     new TWEEN.Tween(this.position)
-      .to(destino, 1000)
+      .to(destino, 1000 * pasos)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
   }
 
-  */
 
-  animacionGolpe(objetivo) {
-  const brazoOriginal = this.brazoDer.rotation.z;
 
-  const origen = { p: 0.0 };
-  const destino = { p: 1.0 };
 
-  new TWEEN.Tween(origen)
-    .to(destino, 300)
-    .easing(TWEEN.Easing.Back.Out)
-    .onUpdate(() => {
-      const angulo = Math.sin(origen.p * Math.PI) * Math.PI / 2;
-      this.brazoDer.rotation.z = -angulo; // Brazo golpeando
-    })
-    .onComplete(() => {
-      this.brazoDer.rotation.z = brazoOriginal;
+  animacionGolpe(piezaDestino, onComplete) {
+    const duracionMovimiento = 1000;
+    const duracionGolpe = 500;
 
-      // Opcional: simular pequeño "empujón" al objetivo
-      if (objetivo) {
-        new TWEEN.Tween(objetivo.position)
-          .to({ y: 1 }, 200)
-          .yoyo(true)
-          .repeat(1)
+    // Posición inicial
+    const origen = {
+      x: this.position.x,
+      z: this.position.z,
+    };
+
+    // Posición destino (acercarse a la pieza enemiga)
+    const destino = {
+      x: piezaDestino.position.x,
+      z: this.color === "blanco"
+        ? piezaDestino.position.z + 0.8
+        : piezaDestino.position.z - 0.8
+    };
+
+
+    // Movimiento hacia la pieza enemiga
+    new TWEEN.Tween(this.position)
+      .to({ x: destino.x, z: destino.z }, duracionMovimiento)
+      .easing(TWEEN.Easing.Quadratic.Out)
+      .onComplete(() => {
+        // Animación de levantar brazo (simulado con rotación si no hay brazo explícito)
+        const brazo = this.brazoDer || this; // usar brazo si está disponible
+        new TWEEN.Tween(brazo.rotation)
+          .to({ x: -Math.PI / 4 }, duracionGolpe / 2)
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .onComplete(() => {
+            // Animación de bajada (el golpe)
+            new TWEEN.Tween(brazo.rotation)
+              .to({ x: 0 }, duracionGolpe / 2)
+              .easing(TWEEN.Easing.Quadratic.In)
+              .onComplete(() => {
+                // Llamar a la función para eliminar la pieza enemiga y continuar juego
+                if (onComplete) onComplete();
+              })
+              .start();
+          })
           .start();
-      }
+      })
+      .start();
+  }
 
-    })
-    .start();
-}
 
 
 
