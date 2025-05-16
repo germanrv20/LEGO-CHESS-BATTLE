@@ -33,35 +33,37 @@ class Pieza extends THREE.Object3D {
     const size = 1.4;
     const offset = (8 * size) / 2 - size / 2;
 
-    const destinoX = columna * size - offset;
-    const destinoZ = fila * size - offset + 2;
-
-    const origenX = this.position.x;
-    const origenZ = this.position.z;
+    const destino = {
+      x: columna * size - offset,
+      z: fila * size - offset + 2,
+      y: 0
+    };
 
     this.fila = fila;
     this.columna = columna;
 
-    const alturaMax = 1;  // altura máxima del salto
+    // Altura máxima del salto
+    const alturaSalto = 1;
 
-    const objetoAnimacion = { t: 0 };
+    // 1. Subir
+    const subir = new TWEEN.Tween(this.position)
+      .to({ y: alturaSalto }, 300)
+      .easing(TWEEN.Easing.Quadratic.Out);
 
-    new TWEEN.Tween(objetoAnimacion)
-      .to({ t: 1 }, 1000)
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .onUpdate(() => {
-        const t = objetoAnimacion.t;
-        // Interpolamos x, z linealmente
-        this.position.x = origenX + (destinoX - origenX) * t;
-        this.position.z = origenZ + (destinoZ - origenZ) * t;
+    // 2. Mover horizontal mientras está arriba
+    const moverHorizontal = new TWEEN.Tween(this.position)
+      .to({ x: destino.x, z: destino.z }, 600)
+      .easing(TWEEN.Easing.Quadratic.InOut);
 
-        // Altura y con forma parabólica: y = 4*h*t*(1-t)
-        this.position.y = 4 * alturaMax * t * (1 - t);
-      })
-      .onComplete(() => {
-        this.position.y = 0;  // asegurar que termina a nivel suelo
-      })
-      .start();
+    // 3. Bajar
+    const bajar = new TWEEN.Tween(this.position)
+      .to({ y: 0 }, 300)
+      .easing(TWEEN.Easing.Quadratic.In);
+
+    subir.chain(moverHorizontal);
+    moverHorizontal.chain(bajar);
+
+    subir.start();
   }
 
   movimientosValidos(tablero) {
