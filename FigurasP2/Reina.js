@@ -12,6 +12,7 @@ class Reina extends Pieza {
     super.moverA(fila, columna);
 
   }
+  /*
   moverA(fila, columna) {
     this.fila = fila;
     this.columna = columna;
@@ -49,44 +50,38 @@ class Reina extends Pieza {
       .start();
   }
 
+  */
 
-  moverA(fila, columna) {
-    this.fila = fila;
-    this.columna = columna;
+  animacionGolpe(objetivo) {
+  const brazoOriginal = this.brazoDer.rotation.z;
 
-    const size = 1.4;
-    const offset = (8 * size) / 2;
+  const origen = { p: 0.0 };
+  const destino = { p: 1.0 };
 
-    // Posición 3D correcta
-    const destino = {
-      x: columna * size - offset + size / 2,
-      z: fila * size - offset + size / 2,
-      y: 0
-    };
+  new TWEEN.Tween(origen)
+    .to(destino, 300)
+    .easing(TWEEN.Easing.Back.Out)
+    .onUpdate(() => {
+      const angulo = Math.sin(origen.p * Math.PI) * Math.PI / 2;
+      this.brazoDer.rotation.z = -angulo; // Brazo golpeando
+    })
+    .onComplete(() => {
+      this.brazoDer.rotation.z = brazoOriginal;
 
-    // Animación de piernas (una oscilación)
-    const origenPiernas = { p: 0.0 };
-    const destinoPiernas = { p: 1 };
+      // Opcional: simular pequeño "empujón" al objetivo
+      if (objetivo) {
+        new TWEEN.Tween(objetivo.position)
+          .to({ y: 1 }, 200)
+          .yoyo(true)
+          .repeat(1)
+          .start();
+      }
 
-    const caminarTween = new TWEEN.Tween(origenPiernas)
-      .to(destinoPiernas, 250)
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .onUpdate(() => this.metodoAnimacionCaminar(origenPiernas.p))
-      .onComplete(() => {
-        if (this.piernaDer) this.piernaDer.rotation.z = 0;
-        if (this.piernaIzq) this.piernaIzq.rotation.z = 0;
-      })
-      .yoyo(true)
-      .repeat(1);
+    })
+    .start();
+}
 
-    // Mueve la pieza
-    new TWEEN.Tween(this.position)
-      .to(destino, 1000)
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .onStart(() => caminarTween.start())
-      .start();
 
-  }
 
 
 
