@@ -4,7 +4,7 @@ import { Pieza } from './Pieza.js';
 import * as TWEEN from '../libs/tween.module.js';
 
 class Reina extends Pieza {
-  
+
   constructor(color, fila, columna, di) {
 
     super("Reina", color, fila, columna, di);
@@ -12,51 +12,86 @@ class Reina extends Pieza {
     super.moverA(fila, columna);
 
   }
-
-  
   moverA(fila, columna) {
     this.fila = fila;
     this.columna = columna;
-  
+
     const size = 1.4;
     const offset = (8 * size) / 2;
+
     const destino = {
-      x: columna * size - offset + size / 2,
-      z: fila * size - offset + size / 2,
+      x: columna * size - offset,
+      z: fila * size - offset,
       y: 0
     };
-  
+
     const direccionExtra = this.color === "blanco" ? 1 : -1;
-  
-    
+
     // Animación de piernas
     const origenPiernas = { p: 0.0 };
     const destinoPiernas = { p: direccionExtra };
-  
+
     const caminarTween = new TWEEN.Tween(origenPiernas)
       .to(destinoPiernas, 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .onUpdate(() => this.metodoAnimacionCaminar(origenPiernas.p))
       .onComplete(() => {
-        // Reinicia la posición de las piernas
         this.piernaDer.rotation.z = 0;
         this.piernaIzq.rotation.z = 0;
       })
-      .repeat(3)
+      .repeat(1)
       .yoyo(true)
       .start();
-  
-    // Animación de movimiento de la reina
+
     new TWEEN.Tween(this.position)
       .to(destino, 1000)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
-      
+  }
+
+
+  moverA(fila, columna) {
+    this.fila = fila;
+    this.columna = columna;
+
+    const size = 1.4;
+    const offset = (8 * size) / 2;
+
+    // Posición 3D correcta
+    const destino = {
+      x: columna * size - offset + size / 2,
+      z: fila * size - offset + size / 2,
+      y: 0
+    };
+
+    // Animación de piernas (una oscilación)
+    const origenPiernas = { p: 0.0 };
+    const destinoPiernas = { p: 1 };
+
+    const caminarTween = new TWEEN.Tween(origenPiernas)
+      .to(destinoPiernas, 250)
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .onUpdate(() => this.metodoAnimacionCaminar(origenPiernas.p))
+      .onComplete(() => {
+        if (this.piernaDer) this.piernaDer.rotation.z = 0;
+        if (this.piernaIzq) this.piernaIzq.rotation.z = 0;
+      })
+      .yoyo(true)
+      .repeat(1);
+
+    // Mueve la pieza
+    new TWEEN.Tween(this.position)
+      .to(destino, 1000)
+      .easing(TWEEN.Easing.Quadratic.InOut)
+      .onStart(() => caminarTween.start())
+      .start();
 
   }
-  
-  
-  
+
+
+
+
+
 
   movimientosValidos(tablero) {
     const movimientos = [];
@@ -66,7 +101,7 @@ class Reina extends Pieza {
     ];
     const fila = this.fila;
     const columna = this.columna;
-  
+
     for (const [df, dc] of direcciones) {
       let f = fila + df;
       let c = columna + dc;
@@ -86,30 +121,30 @@ class Reina extends Pieza {
 
       }
     }
-  
+
     return movimientos;
 
   }
 
   createFigura() {
 
-     const loaderT = new THREE.TextureLoader();
-  const texturaBlanca = loaderT.load('./texturas/wood.jpg');
-  const texturaNegra = loaderT.load('./texturas/ladrillo.jpeg');
+    const loaderT = new THREE.TextureLoader();
+    const texturaBlanca = loaderT.load('./texturas/wood.jpg');
+    const texturaNegra = loaderT.load('./texturas/ladrillo.jpeg');
 
-  // Seleccionar textura según el color
-  let textura;
-  if (this.color === "blanco") {
-    textura = texturaBlanca;
-  } else {
-    textura = texturaNegra;
-  }
+    // Seleccionar textura según el color
+    let textura;
+    if (this.color === "blanco") {
+      textura = texturaBlanca;
+    } else {
+      textura = texturaNegra;
+    }
 
-  // Crear material con textura
-   this.material = new THREE.MeshStandardMaterial({ map: textura })
+    // Crear material con textura
+    this.material = new THREE.MeshStandardMaterial({ map: textura })
 
     const loader = new OBJLoader();
-    
+
     const piezas = [
       'cabeza.obj',
       'cuerpo.obj',
@@ -131,7 +166,7 @@ class Reina extends Pieza {
           });
 
           //obj.rotateY(Math.PI / 2);
-          
+
           /*if (this.color === "negro") {
             obj.rotateY(Math.PI);
           }*/
@@ -141,16 +176,16 @@ class Reina extends Pieza {
           let escalado = 0.6;
 
           obj.scale.set(escalado, escalado, escalado);
-          
+
           if (nombre === 'brazo_der.obj') {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
-              obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
+              obj.position.set(-0.553781 * escalado, 2.73347 * escalado, -2);
             };
-            if (this.color === "blanco") { 
-              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+            if (this.color === "blanco") {
+              obj.position.set(0.553781 * escalado, 2.73347 * escalado, -2);
             };
-            obj.rotateY(Math.PI/2);
+            obj.rotateY(Math.PI / 2);
 
             this.brazoDer = obj
           }
@@ -158,13 +193,13 @@ class Reina extends Pieza {
           if (nombre === 'brazo_izq.obj') {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
-              obj.position.set(0.553781*escalado, 2.73347*escalado, -2);
+              obj.position.set(0.553781 * escalado, 2.73347 * escalado, -2);
             }
             if (this.color === "blanco") {
-              obj.position.set(-0.553781*escalado, 2.73347*escalado, -2);
+              obj.position.set(-0.553781 * escalado, 2.73347 * escalado, -2);
             };
-            obj.rotateY(Math.PI/2);
-            obj.rotateZ(Math.PI/2);
+            obj.rotateY(Math.PI / 2);
+            obj.rotateZ(Math.PI / 2);
             this.brazoIzq = obj
           }
 
@@ -172,8 +207,8 @@ class Reina extends Pieza {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
             };
-            obj.rotateY(Math.PI/2);
-            obj.position.set(-0.366867*escalado, 1.44905*escalado, -2);
+            obj.rotateY(Math.PI / 2);
+            obj.position.set(-0.366867 * escalado, 1.44905 * escalado, -2);
 
             this.piernaDer = obj
           }
@@ -182,8 +217,8 @@ class Reina extends Pieza {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
             };
-            obj.rotateY(Math.PI/2);
-            obj.position.set(0.357668*escalado, 1.45441*escalado, -2);
+            obj.rotateY(Math.PI / 2);
+            obj.position.set(0.357668 * escalado, 1.45441 * escalado, -2);
 
             this.piernaIzq = obj
           }
@@ -192,8 +227,8 @@ class Reina extends Pieza {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
             };
-            obj.rotateY(Math.PI/2);
-            obj.position.set(0, 3.17551*escalado, -2);
+            obj.rotateY(Math.PI / 2);
+            obj.position.set(0, 3.17551 * escalado, -2);
 
             this.cabeza = obj
           }
@@ -202,8 +237,8 @@ class Reina extends Pieza {
             if (this.color === "negro") {
               obj.rotateY(Math.PI);
             };
-            obj.rotateY(Math.PI/2);
-            obj.position.set(0, 1.91479*escalado, -2);
+            obj.rotateY(Math.PI / 2);
+            obj.position.set(0, 1.91479 * escalado, -2);
 
             this.cuerpo = obj
           }
@@ -218,33 +253,33 @@ class Reina extends Pieza {
 
   //moviento angulos brazos
   moverBrazoder(angulo) {
-    if(this.brazoDer) {
+    if (this.brazoDer) {
       this.brazoDer.rotateZ(angulo);
       console.log("brazoDer rotado");
     }
   }
   moverBrazoizq(angulo) {
-    if(this.brazoIzq) {
+    if (this.brazoIzq) {
       this.brazoIzq.rotateZ(angulo);
     }
   }
   moverPiernaDer(angulo) {
-    if(this.piernaDer) {
+    if (this.piernaDer) {
       this.piernaDer.rotateZ(angulo);
     }
   }
   moverPiernaIzq(angulo) {
-    if(this.piernaIzq) {
+    if (this.piernaIzq) {
       this.piernaIzq.rotateZ(angulo);
     }
   }
   moverCabeza(angulo) {
-    if(this.cabeza) {
+    if (this.cabeza) {
       this.cabeza.rotateY(angulo);
     }
   }
   moverCuerpo(angulo) {
-    if(this.cuerpo) {
+    if (this.cuerpo) {
       this.cuerpo.rotation.z = angulo;
     }
   }
@@ -255,8 +290,8 @@ class Reina extends Pieza {
     if (this.piernaDer && this.piernaIzq) {
       this.piernaDer.rotation.z = angulo;
       this.piernaIzq.rotation.z = -angulo;
-     
-      
+
+
     }
   }
   metodoAnimacionBrazo(p) {
@@ -264,12 +299,12 @@ class Reina extends Pieza {
       this.brazoDer.rotation.z = -p * Math.PI / 2; // de 0 a -90 grados
     }
   }
-  
-  
-  
 
 
-  
+
+
+
+
 
 
 
