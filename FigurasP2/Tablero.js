@@ -161,29 +161,46 @@ class Tablero extends THREE.Object3D {
 
       if (esMovimientoValido) {
         const pieza = this.piezaSeleccionada;
-        if (esCaptura && pieza instanceof Reina) {
-          // Captura animada con golpe
-          pieza.animacionGolpe(piezaDestino, () => {
+
+        if (esCaptura) {
+          if (pieza instanceof Reina) {
+            // Captura con animación especial para la reina
+            pieza.animacionGolpe(piezaDestino, () => {
+              this.tablero[piezaDestino.fila][piezaDestino.columna] = null;
+              this.eliminarPieza(piezaDestino);
+
+              this.tablero[pieza.fila][pieza.columna] = null;
+              this.tablero[fila][columna] = pieza;
+              pieza.moverA(fila, columna);
+
+              this.piezaSeleccionada = null;
+              this.eliminarResaltados();
+              this.apuntarLuzAPieza(null);
+
+              this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
+              this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
+              this.escenaPadre.transicionarCamara(this.turno);
+            });
+          } else {
+            // Captura sin animación especial para otras piezas
+            this.tablero[piezaDestino.fila][piezaDestino.columna] = null;
             this.eliminarPieza(piezaDestino);
 
-            // Mover la reina
-            this.tablero[pieza.getFila()][pieza.getColumna()] = null;
+            this.tablero[pieza.fila][pieza.columna] = null;
             this.tablero[fila][columna] = pieza;
             pieza.moverA(fila, columna);
 
-            // Limpiar selección
             this.piezaSeleccionada = null;
             this.eliminarResaltados();
             this.apuntarLuzAPieza(null);
 
-            // Turno
             this.turnoActual = this.turnoActual === 'blanco' ? 'negro' : 'blanco';
             this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
             this.escenaPadre.transicionarCamara(this.turno);
-          });
+          }
         } else {
-          // Movimiento normal
-          this.tablero[pieza.getFila()][pieza.getColumna()] = null;
+          // Movimiento normal sin captura
+          this.tablero[pieza.fila][pieza.columna] = null;
           this.tablero[fila][columna] = pieza;
           pieza.moverA(fila, columna);
 
@@ -195,10 +212,8 @@ class Tablero extends THREE.Object3D {
           this.turno = this.turno === 'blanco' ? 'negro' : 'blanco';
           this.escenaPadre.transicionarCamara(this.turno);
         }
-
-      } else {
-        console.log("Movimiento inválido para esa pieza");
       }
+
     }
   }
 

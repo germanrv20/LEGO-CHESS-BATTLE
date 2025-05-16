@@ -24,7 +24,7 @@ class Reina extends Pieza {
     this.fila = fila;
     this.columna = columna;
 
-    const ajusteZ = this.color === 'blanco' ?  2 : 2;
+    const ajusteZ = this.color === 'blanco' ? 2 : 2;
 
     const destino = {
       x: columna * size - offset + size / 2,
