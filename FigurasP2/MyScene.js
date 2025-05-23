@@ -9,12 +9,9 @@ import * as TWEEN from '../libs/tween.module.js';
 
 // Clases de mi proyecto
 
-import { Torre } from './Torre.js'
-import { Alfil } from './Alfil.js'
+
 import { Tablero } from './Tablero.js'
-import { Rey } from './Rey.js'
-import { Peon } from './Peon.js'
-import { Caballo } from './caballo.js'
+
 
  
 /// La clase fachada del modelo
