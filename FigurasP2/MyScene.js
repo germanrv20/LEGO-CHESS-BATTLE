@@ -10,7 +10,6 @@ import * as TWEEN from '../libs/tween.module.js';
 // Clases de mi proyecto
 
 import { Torre } from './Torre.js'
-import { Lego } from './Lego.js'
 import { Alfil } from './Alfil.js'
 import { Tablero } from './Tablero.js'
 import { Rey } from './Rey.js'
@@ -53,23 +52,15 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Torre("blanco", -1, 20, 20);
-    this.model1 = new Lego(this.gui, "Controles del Lego");
-    this.model2 = new Alfil("blanco", -1, 20,20);
-    this.model3 = new Tablero(this.gui, "Controles del Tablero", this);
-    this.model3.position.set(0, 0, 0);
-    this.model4 = new Rey("blanco", -1, 20,20); //la pone os lejos 
-    this.model5 = new Peon("blanco", -1, 20,20);
-    this.model6 = new Caballo("blanco", -1, 20,20);
+    
+    this.tablero = new Tablero(this.gui, "Controles del Tablero", this);
+    this.tablero.position.set(0, 0, 0);
+    
 
     // Se añade el modelo a la escena
-    this.add (this.model);
-    this.add (this.model1);
-    this.add (this.model2);
-    this.add (this.model3);
-    this.add (this.model4);
-    this.add (this.model5);
-    this.add (this.model6);
+   
+    this.add (this.tablero);
+    
    
   }
   
@@ -288,7 +279,7 @@ $(function () {
   window.addEventListener ("resize", () => scene.onWindowResize());
   
   window.addEventListener("click", (event) => {
-    scene.model3.handleClick(event, scene.camera, scene.renderer.domElement);
+    scene.tablero.handleClick(event, scene.camera, scene.renderer.domElement);
   });
 
   // Que no se nos olvide, la primera visualización.

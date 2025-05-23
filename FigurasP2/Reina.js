@@ -45,7 +45,7 @@ class Reina extends Pieza {
         this.piernaDer.rotation.z = 0;
         this.piernaIzq.rotation.z = 0;
       })
-      .repeat(pasos)
+      .repeat(pasos -1)
       .yoyo(true)
       .start();
 
